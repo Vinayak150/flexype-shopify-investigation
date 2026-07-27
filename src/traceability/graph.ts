@@ -19,8 +19,7 @@ export const TraceNodeKind = {
   Explanation: "Explanation",
 } as const;
 
-export type TraceNodeKind =
-  (typeof TraceNodeKind)[keyof typeof TraceNodeKind];
+export type TraceNodeKind = (typeof TraceNodeKind)[keyof typeof TraceNodeKind];
 
 export const TraceLinkKind = {
   InvestigationOwnsEvidence: "InvestigationOwnsEvidence",
@@ -35,8 +34,7 @@ export const TraceLinkKind = {
   UnknownTrackedOpen: "UnknownTrackedOpen",
 } as const;
 
-export type TraceLinkKind =
-  (typeof TraceLinkKind)[keyof typeof TraceLinkKind];
+export type TraceLinkKind = (typeof TraceLinkKind)[keyof typeof TraceLinkKind];
 
 export const TraceCompleteness = {
   Empty: "Empty",
@@ -49,10 +47,7 @@ export type TraceCompleteness =
 
 export type TraceNodeId = string & { readonly __brand: "TraceNodeId" };
 
-export function createTraceNodeId(
-  kind: TraceNodeKind,
-  key: string,
-): TraceNodeId {
+export function createTraceNodeId(kind: TraceNodeKind, key: string): TraceNodeId {
   const trimmed = key.trim();
   if (trimmed.length === 0) {
     throw new Error("Trace node key must be non-empty");
@@ -172,10 +167,7 @@ function hasKind(nodes: readonly TraceNode[], kind: TraceNodeKind): boolean {
   return nodes.some((node) => node.nodeKind === kind);
 }
 
-function hasLinkKind(
-  links: readonly TraceLink[],
-  kind: TraceLinkKind,
-): boolean {
+function hasLinkKind(links: readonly TraceLink[], kind: TraceLinkKind): boolean {
   return links.some((link) => link.linkKind === kind);
 }
 

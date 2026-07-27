@@ -10,10 +10,7 @@ import {
   ProductConfigurationState,
 } from "./product-configuration.js";
 import type { RawConfigurationMaterial } from "./retriever.js";
-import {
-  createConfigurationSnapshot,
-  type ConfigurationSnapshot,
-} from "./snapshot.js";
+import { createConfigurationSnapshot, type ConfigurationSnapshot } from "./snapshot.js";
 
 /**
  * Deterministically normalize retrieved material into ConfigurationSnapshot.

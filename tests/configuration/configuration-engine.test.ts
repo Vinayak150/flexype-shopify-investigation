@@ -139,9 +139,9 @@ describe("E-009 Configuration Engine", () => {
   });
 
   it("rejects invented product ids and maps load failures without throwing", async () => {
-    expect(() =>
-      createDetectedProductHint("InventedProduct" as never),
-    ).toThrowError(/closed FlexyPe product ids/);
+    expect(() => createDetectedProductHint("InventedProduct" as never)).toThrowError(
+      /closed FlexyPe product ids/,
+    );
 
     const engine = new ConfigurationEngine({
       election: "pursued",
@@ -165,9 +165,7 @@ describe("E-009 Configuration Engine", () => {
     const engine = new ConfigurationEngine({
       election: "pursued",
       retriever: createMemoryConfigurationRetriever({
-        materialsByProduct: new Map([
-          [FlexyPeProductId.Checkout, "a=1"],
-        ]),
+        materialsByProduct: new Map([[FlexyPeProductId.Checkout, "a=1"]]),
       }),
     });
     const snapshot = await engine.tryLoad(context("inv-cfg-immutable"), [
@@ -186,9 +184,7 @@ describe("E-009 Configuration Engine", () => {
     const engine = new ConfigurationEngine({
       election: "pursued",
       retriever: createMemoryConfigurationRetriever({
-        materialsByProduct: new Map([
-          [FlexyPeProductId.FlexyPass, "pass=on"],
-        ]),
+        materialsByProduct: new Map([[FlexyPeProductId.FlexyPass, "pass=on"]]),
       }),
     });
     const snapshot = await engine.tryLoad(ctx, [
@@ -223,9 +219,7 @@ describe("E-009 Configuration Engine", () => {
       expect(source).not.toMatch(/NormalizedEvidence|EvidenceRecord/);
     }
 
-    expect(() => rejectEvidenceContamination()).toThrow(
-      ConfigurationEngineError,
-    );
+    expect(() => rejectEvidenceContamination()).toThrow(ConfigurationEngineError);
     try {
       rejectEvidenceContamination();
     } catch (error) {
@@ -253,9 +247,7 @@ describe("E-009 Configuration Engine", () => {
     const engine = new ConfigurationEngine({
       election: "pursued",
       retriever: createMemoryConfigurationRetriever({
-        materialsByProduct: new Map([
-          [FlexyPeProductId.Checkout, "ok"],
-        ]),
+        materialsByProduct: new Map([[FlexyPeProductId.Checkout, "ok"]]),
       }),
     });
     const snapshot = await engine.tryLoad(context("inv-cfg-no-detection"), [

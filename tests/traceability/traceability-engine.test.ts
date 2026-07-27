@@ -38,10 +38,7 @@ function sampleLineage(investigationKey = "inv-trace-1") {
     ],
     reportKey: `report:${investigationKey}`,
     viewKey: `view:${investigationKey}`,
-    obligationIds: [
-      createObligationId("FR-013"),
-      createObligationId("ADR-004"),
-    ],
+    obligationIds: [createObligationId("FR-013"), createObligationId("ADR-004")],
     openUnknownIds: ["U-001"],
     explanationLinks: [
       {
@@ -120,9 +117,7 @@ describe("E-010 Traceability Engine", () => {
       graph.nodes.some((node) => node.nodeKind === TraceNodeKind.EvidenceItem),
     ).toBe(true);
     expect(
-      graph.nodes.some(
-        (node) => node.nodeKind === TraceNodeKind.DetectionResult,
-      ),
+      graph.nodes.some((node) => node.nodeKind === TraceNodeKind.DetectionResult),
     ).toBe(true);
   });
 
@@ -185,9 +180,7 @@ describe("E-010 Traceability Engine", () => {
     );
     expect(
       a.graph.links.map((link) => `${link.linkKind}|${link.from}|${link.to}`),
-    ).toEqual(
-      b.graph.links.map((link) => `${link.linkKind}|${link.from}|${link.to}`),
-    );
+    ).toEqual(b.graph.links.map((link) => `${link.linkKind}|${link.from}|${link.to}`));
   });
 
   it("does not mutate source lineage input objects", () => {
@@ -231,12 +224,12 @@ describe("E-010 Traceability Engine", () => {
     for (const source of sources) {
       expect(source).not.toMatch(/DetectionEngine|EvidenceEngine|ReportingEngine/);
       expect(source).not.toMatch(/evaluateDetection|normalizeEvidence|assembleReport/);
-      expect(source).not.toMatch(/from ["'].*\/(evidence|detection|reporting|presentation|configuration)\//);
+      expect(source).not.toMatch(
+        /from ["'].*\/(evidence|detection|reporting|presentation|configuration)\//,
+      );
     }
 
-    expect(() => rejectBusinessArtifactMutation()).toThrow(
-      TraceabilityEngineError,
-    );
+    expect(() => rejectBusinessArtifactMutation()).toThrow(TraceabilityEngineError);
     try {
       rejectBusinessArtifactMutation();
     } catch (error) {

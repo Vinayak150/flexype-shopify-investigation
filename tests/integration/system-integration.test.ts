@@ -16,15 +16,9 @@ import {
   createMemoryBrowserPorts,
   createMemoryDomPorts,
 } from "../../src/observation/index.js";
-import {
-  createSystemRuntime,
-  IntegrationError,
-} from "../../extension/index.js";
+import { createSystemRuntime, IntegrationError } from "../../extension/index.js";
 
-const extensionDir = join(
-  dirname(fileURLToPath(import.meta.url)),
-  "../../extension",
-);
+const extensionDir = join(dirname(fileURLToPath(import.meta.url)), "../../extension");
 
 describe("E-011 System Integration", () => {
   it("starts up, runs full Investigation pipeline, and shuts down", async () => {
@@ -83,9 +77,7 @@ describe("E-011 System Integration", () => {
     runtime.startup();
     const result = await runtime.runInvestigation("https://flow.example");
 
-    const byStage = new Map(
-      result.stageResults.map((stage) => [stage.stage, stage]),
-    );
+    const byStage = new Map(result.stageResults.map((stage) => [stage.stage, stage]));
     expect(byStage.get("Observation")?.ok).toBe(true);
     expect(byStage.get("Evidence")?.ok).toBe(true);
     expect(byStage.get("Detection")?.ok).toBe(true);
@@ -106,9 +98,7 @@ describe("E-011 System Integration", () => {
 
     expect(result.report).toBeDefined();
     expect(result.view).toBeDefined();
-    expect(result.configuration?.state).toBe(
-      ProductConfigurationState.NotInScope,
-    );
+    expect(result.configuration?.state).toBe(ProductConfigurationState.NotInScope);
     expect(result.report?.productConfiguration).toBeUndefined();
     expect(result.traceExport).toBeUndefined();
     runtime.shutdown();
@@ -147,9 +137,7 @@ describe("E-011 System Integration", () => {
 
     const withoutTrace = createSystemRuntime();
     withoutTrace.startup({ enableTraceability: false });
-    const plain = await withoutTrace.runInvestigation(
-      "https://trace-off.example",
-    );
+    const plain = await withoutTrace.runInvestigation("https://trace-off.example");
     expect(plain.traceExport).toBeUndefined();
     expect(plain.report).toBeDefined();
     withoutTrace.shutdown();
@@ -170,9 +158,7 @@ describe("E-011 System Integration", () => {
 
     const result = await runtime.runInvestigation("https://partial.example");
 
-    expect(result.stageResults.some((stage) => stage.partial === true)).toBe(
-      true,
-    );
+    expect(result.stageResults.some((stage) => stage.partial === true)).toBe(true);
     expect(result.context.state).toBe(InvestigationState.CompletedPartial);
     expect(result.context.completionDisposition).not.toBe("Completed");
     const detected = result.detection?.results.results.filter(
@@ -194,19 +180,13 @@ describe("E-011 System Integration", () => {
       (result.evidence as unknown as { items: unknown[] }).items = [];
     }).toThrow();
     expect(result.report?.investigationId).toBe(result.evidence?.investigationId);
-    expect(result.view?.report.investigationId).toBe(
-      result.evidence?.investigationId,
-    );
+    expect(result.view?.report.investigationId).toBe(result.evidence?.investigationId);
     runtime.shutdown();
   });
 
   it("keeps composition free of package business implementations", () => {
-    const files = readdirSync(extensionDir).filter((name) =>
-      name.endsWith(".ts"),
-    );
-    const sources = files.map((file) =>
-      readFileSync(join(extensionDir, file), "utf8"),
-    );
+    const files = readdirSync(extensionDir).filter((name) => name.endsWith(".ts"));
+    const sources = files.map((file) => readFileSync(join(extensionDir, file), "utf8"));
 
     for (const source of sources) {
       expect(source).not.toMatch(/class DefinitionEvaluator/);

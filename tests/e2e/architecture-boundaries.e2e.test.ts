@@ -45,7 +45,9 @@ describe("E-012 e2e — architecture ownership boundaries (VD-002 / VD-008)", ()
     for (const source of packageSources("observation")) {
       expect(source).not.toMatch(/from ["']\.\.\/detection\//);
       expect(source).not.toMatch(/from ["']\.\.\/evidence\//);
-      expect(source).not.toMatch(/DetectionOutcome|NormalizedEvidence|DiagnosticReport/);
+      expect(source).not.toMatch(
+        /DetectionOutcome|NormalizedEvidence|DiagnosticReport/,
+      );
       expect(source).not.toMatch(/evaluateDetection|assembleReport/);
     }
   });
@@ -53,7 +55,9 @@ describe("E-012 e2e — architecture ownership boundaries (VD-002 / VD-008)", ()
   it("Evidence does not conclude products or evaluate Detection", () => {
     for (const source of packageSources("evidence")) {
       expect(source).not.toMatch(/from ["']\.\.\/detection\//);
-      expect(source).not.toMatch(/DetectionOutcome|DetectionEngine|DefinitionEvaluator/);
+      expect(source).not.toMatch(
+        /DetectionOutcome|DetectionEngine|DefinitionEvaluator/,
+      );
       expect(source).not.toMatch(/assembleReport|PresentationReadyView/);
     }
   });
@@ -61,7 +65,9 @@ describe("E-012 e2e — architecture ownership boundaries (VD-002 / VD-008)", ()
   it("Detection does not collect Evidence or access Observation browser ports", () => {
     for (const source of packageSources("detection")) {
       expect(source).not.toMatch(/from ["']\.\.\/observation\//);
-      expect(source).not.toMatch(/EvidenceCollector|acquireAndNormalize|FactSourcePort/);
+      expect(source).not.toMatch(
+        /EvidenceCollector|acquireAndNormalize|FactSourcePort/,
+      );
       expect(source).not.toMatch(/createMemoryBrowserPorts|BrowserDiscoveryPorts/);
       expect(source).not.toMatch(/assembleReport|PresentationEngine/);
     }

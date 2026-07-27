@@ -6,11 +6,7 @@ import {
   isFlexyPeProductId,
 } from "../../src/detection/index.js";
 import { createSystemRuntime } from "../../extension/index.js";
-import {
-  E2E_STOREFRONT_URL,
-  runCorePathE2E,
-  runPartialPathE2E,
-} from "./fixtures.js";
+import { E2E_STOREFRONT_URL, runCorePathE2E, runPartialPathE2E } from "./fixtures.js";
 
 describe("E-012 e2e — ADR-001–ADR-006 runtime conformance", () => {
   it("ADR-001: one Investigation / Storefront / Report / View per episode", async () => {
@@ -74,9 +70,7 @@ describe("E-012 e2e — ADR-001–ADR-006 runtime conformance", () => {
     const browser = (
       await import("../../src/observation/index.js")
     ).createMemoryBrowserPorts();
-    const dom = (
-      await import("../../src/observation/index.js")
-    ).createMemoryDomPorts();
+    const dom = (await import("../../src/observation/index.js")).createMemoryDomPorts();
 
     runtime.startup({
       browser,

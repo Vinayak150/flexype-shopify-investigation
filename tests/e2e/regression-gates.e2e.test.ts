@@ -24,9 +24,7 @@ describe("E-012 e2e — regression gates and M8 evidence pack (T1–T6 / VD-001�
     expect(investigationId).toBe("P-001");
     expect(presentationId).toBe("P-006");
     expect(traceabilityId).toBe("P-008");
-    expect(existsSync(join(repoRoot, "architecture/00_PROJECT_VISION.md"))).toBe(
-      true,
-    );
+    expect(existsSync(join(repoRoot, "architecture/00_PROJECT_VISION.md"))).toBe(true);
     expect(existsSync(join(repoRoot, "adr"))).toBe(true);
     expect(existsSync(join(repoRoot, "extension/composition.ts"))).toBe(true);
   });

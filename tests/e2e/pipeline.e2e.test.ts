@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { InvestigationState, ORCHESTRATION_ORDER } from "../../src/investigation/index.js";
+import {
+  InvestigationState,
+  ORCHESTRATION_ORDER,
+} from "../../src/investigation/index.js";
 import { ProductConfigurationState } from "../../src/configuration/index.js";
 import {
   assertPresentationViewImmutable,

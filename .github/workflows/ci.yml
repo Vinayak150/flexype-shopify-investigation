@@ -21,6 +21,8 @@ jobs:
       - name: Architecture freeze guard
         if: github.event_name == 'pull_request'
         run: bash tooling/check-architecture-freeze.sh "origin/${{ github.base_ref }}"
+      - name: Release structure
+        run: npm run release:structure
       - name: Typecheck
         run: npm run typecheck
       - name: Lint

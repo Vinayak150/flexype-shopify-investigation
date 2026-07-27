@@ -43,9 +43,7 @@ describe("E-012 e2e — partial outcome and Unknown honesty (ADR-006)", () => {
       }
     }
 
-    expect(result.view?.notDetectedVisible || result.view?.unknownVisible).toBe(
-      true,
-    );
+    expect(result.view?.notDetectedVisible || result.view?.unknownVisible).toBe(true);
 
     runtime.shutdown();
   });

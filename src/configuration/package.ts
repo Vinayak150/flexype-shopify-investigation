@@ -6,10 +6,7 @@ import {
 import type { ConfigurationRetriever } from "./retriever.js";
 import type { ConfigurationElection } from "./session.js";
 
-export type ConfigurationPackageStatus =
-  | "uninitialized"
-  | "ready"
-  | "shutdown";
+export type ConfigurationPackageStatus = "uninitialized" | "ready" | "shutdown";
 
 export interface ConfigurationPackageDependencies {
   readonly election?: ConfigurationElection;
@@ -24,9 +21,7 @@ export class ConfigurationPackage {
   private status: ConfigurationPackageStatus = "uninitialized";
   private engine: ConfigurationEngine | undefined;
 
-  initialize(
-    dependencies: ConfigurationPackageDependencies = {},
-  ): ConfigurationEngine {
+  initialize(dependencies: ConfigurationPackageDependencies = {}): ConfigurationEngine {
     if (this.status === "shutdown") {
       throwConfigurationError(
         ConfigurationEngineErrorCode.PackageAlreadyShutdown,

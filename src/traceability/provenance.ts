@@ -36,9 +36,7 @@ export function createProvenanceRecord(input: {
     explanationDefinitionIds: Object.freeze([
       ...(input.explanationDefinitionIds ?? []),
     ]),
-    supportingEvidenceKeys: Object.freeze([
-      ...(input.supportingEvidenceKeys ?? []),
-    ]),
+    supportingEvidenceKeys: Object.freeze([...(input.supportingEvidenceKeys ?? [])]),
     ...(input.note !== undefined ? { note: input.note } : {}),
   });
 }

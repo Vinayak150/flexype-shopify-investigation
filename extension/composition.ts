@@ -59,10 +59,7 @@ import {
   type TraceabilityPackage,
   type TraceExport,
 } from "../src/traceability/index.js";
-import {
-  IntegrationErrorCode,
-  throwIntegrationError,
-} from "./errors.js";
+import { IntegrationErrorCode, throwIntegrationError } from "./errors.js";
 import { bindPopupShell, type PopupShellBinding } from "./popup-shell.js";
 import { recordInvestigationTrace } from "./trace-hooks.js";
 
@@ -162,11 +159,8 @@ export class SystemRuntime {
     // 6. Evidence — resolve Affordance from Observation (cached observe; ADR-005)
     this.evidencePackage = createEvidencePackage();
     this.evidenceCoordinator = this.evidencePackage.initialize({
-      resolveAffordance: (context) =>
-        this.observationCoordinator?.observe(context),
-      ...(options.factSource !== undefined
-        ? { factSource: options.factSource }
-        : {}),
+      resolveAffordance: (context) => this.observationCoordinator?.observe(context),
+      ...(options.factSource !== undefined ? { factSource: options.factSource } : {}),
     });
 
     // 7. Detection — immutable Evidence snapshot only
@@ -197,9 +191,7 @@ export class SystemRuntime {
             unknownQualifications: output.unknownQualifications,
             explanations: output.explanations,
           }),
-          ...(productConfiguration !== undefined
-            ? { productConfiguration }
-            : {}),
+          ...(productConfiguration !== undefined ? { productConfiguration } : {}),
         });
       },
     });
@@ -255,9 +247,7 @@ export class SystemRuntime {
     const run = await coordinator.run(started);
     const completed = coordinator.complete(run.context, run.readiness);
 
-    const evidence = this.evidenceCoordinator?.getSnapshot(
-      completed.investigationId,
-    );
+    const evidence = this.evidenceCoordinator?.getSnapshot(completed.investigationId);
     const detection = this.detectionEngine?.getOutput(completed.investigationId);
     const report = this.reportingEngine?.getReport(completed.investigationId);
     const view = this.presentationEngine?.getView(completed.investigationId);
@@ -265,8 +255,7 @@ export class SystemRuntime {
       completed.investigationId,
     );
 
-    const popupShell =
-      view !== undefined ? bindPopupShell(view) : undefined;
+    const popupShell = view !== undefined ? bindPopupShell(view) : undefined;
 
     const traceExport = recordInvestigationTrace(this.traceabilityEngine, {
       context: completed,

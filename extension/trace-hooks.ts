@@ -40,17 +40,15 @@ export function recordInvestigationTrace(
       detectionLinks: (input.detection?.results.results ?? []).map((result) =>
         Object.freeze({
           detectionResultKey: String(result.detectionResultId),
-          supportingEvidenceKeys: (result.supportingEvidenceIds ?? []).map(
-            (id) => String(id),
+          supportingEvidenceKeys: (result.supportingEvidenceIds ?? []).map((id) =>
+            String(id),
           ),
         }),
       ),
       ...(input.report !== undefined
         ? { reportKey: `report:${investigationKey}` }
         : {}),
-      ...(input.view !== undefined
-        ? { viewKey: `view:${investigationKey}` }
-        : {}),
+      ...(input.view !== undefined ? { viewKey: `view:${investigationKey}` } : {}),
       ...(input.configuration !== undefined
         ? {
             configurationSnapshotKey: `cfg:${investigationKey}`,
@@ -65,17 +63,16 @@ export function recordInvestigationTrace(
         createObligationId("ADR-004"),
         createObligationId("ADR-006"),
       ],
-      openUnknownIds: (
-        input.detection?.unknownQualifications ?? []
-      ).map((qualification) => qualification.domainUnknownId),
-      explanationLinks: (input.detection?.explanations ?? []).map(
-        (explanation) =>
-          Object.freeze({
-            definitionId: explanation.definitionId,
-            supportingEvidenceKeys: explanation.supportingEvidenceIds.map(
-              (id) => String(id),
-            ),
-          }),
+      openUnknownIds: (input.detection?.unknownQualifications ?? []).map(
+        (qualification) => qualification.domainUnknownId,
+      ),
+      explanationLinks: (input.detection?.explanations ?? []).map((explanation) =>
+        Object.freeze({
+          definitionId: explanation.definitionId,
+          supportingEvidenceKeys: explanation.supportingEvidenceIds.map((id) =>
+            String(id),
+          ),
+        }),
       ),
       adrIds: ["ADR-001", "ADR-002", "ADR-003", "ADR-004", "ADR-005", "ADR-006"],
       packageRuntimeMaps: [

@@ -2,10 +2,7 @@ import type { InvestigationContext, InvestigationId } from "../investigation/ind
 import type { DetectedProductHint } from "./hints.js";
 import { createConfigurationMetadata } from "./metadata.js";
 import type { ConfigurationRetriever } from "./retriever.js";
-import {
-  ConfigurationSession,
-  type ConfigurationElection,
-} from "./session.js";
+import { ConfigurationSession, type ConfigurationElection } from "./session.js";
 import {
   createUnavailableSnapshot,
   toReportingAdjunct,
@@ -78,9 +75,7 @@ export class ConfigurationEngine {
     }
   }
 
-  getSnapshot(
-    investigationId: InvestigationId,
-  ): ConfigurationSnapshot | undefined {
+  getSnapshot(investigationId: InvestigationId): ConfigurationSnapshot | undefined {
     return this.snapshots.get(investigationId);
   }
 

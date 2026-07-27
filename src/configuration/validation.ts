@@ -9,9 +9,7 @@ import { isFlexyPeProductId } from "../detection/index.js";
 /**
  * Structural validation of Configuration snapshots (adjunct only).
  */
-export function validateConfigurationSnapshot(
-  snapshot: ConfigurationSnapshot,
-): void {
+export function validateConfigurationSnapshot(snapshot: ConfigurationSnapshot): void {
   if (snapshot.kind !== "ConfigurationSnapshot") {
     throwConfigurationError(
       ConfigurationEngineErrorCode.InvalidConfigurationMaterial,
@@ -28,8 +26,7 @@ export function validateConfigurationSnapshot(
     }
     if (
       item.state === ProductConfigurationState.Available &&
-      (item.readableContent === undefined ||
-        item.readableContent.trim().length === 0)
+      (item.readableContent === undefined || item.readableContent.trim().length === 0)
     ) {
       throwConfigurationError(
         ConfigurationEngineErrorCode.InvalidConfigurationMaterial,

@@ -4,10 +4,7 @@ import {
   throwTraceabilityError,
 } from "./engine-errors.js";
 
-export type TraceabilityPackageStatus =
-  | "uninitialized"
-  | "ready"
-  | "shutdown";
+export type TraceabilityPackageStatus = "uninitialized" | "ready" | "shutdown";
 
 /**
  * P-008 package initialization / shutdown (E-010).

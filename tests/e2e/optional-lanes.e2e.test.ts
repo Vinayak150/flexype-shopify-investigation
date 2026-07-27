@@ -28,9 +28,7 @@ describe("E-012 e2e — optional Configuration and Traceability lanes", () => {
 
     expect(result.report).toBeDefined();
     expect(result.view).toBeDefined();
-    expect(result.configuration?.state).toBe(
-      ProductConfigurationState.Unavailable,
-    );
+    expect(result.configuration?.state).toBe(ProductConfigurationState.Unavailable);
     expect(result.report?.productConfiguration).toBeUndefined();
     expect(result.stageResults.every((stage) => stage.ok)).toBe(true);
 
@@ -53,7 +51,9 @@ describe("E-012 e2e — optional Configuration and Traceability lanes", () => {
     expect(withTrace.result.stageResults.map((s) => s.stage)).toEqual(
       withoutTrace.result.stageResults.map((s) => s.stage),
     );
-    expect(withTrace.result.report?.detectionResultSet.results.map((r) => r.outcome)).toEqual(
+    expect(
+      withTrace.result.report?.detectionResultSet.results.map((r) => r.outcome),
+    ).toEqual(
       withoutTrace.result.report?.detectionResultSet.results.map((r) => r.outcome),
     );
     expect(withTrace.result.context.completionDisposition).toBe(

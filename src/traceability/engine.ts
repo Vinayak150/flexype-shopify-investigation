@@ -1,15 +1,8 @@
 import type { TraceExport } from "./exporter.js";
-import {
-  buildTraceGraph,
-  type TraceCompleteness,
-  type TraceGraph,
-} from "./graph.js";
+import { buildTraceGraph, type TraceCompleteness, type TraceGraph } from "./graph.js";
 import type { ArtifactLineageInput } from "./lineage.js";
 import { createProvenanceRecord } from "./provenance.js";
-import {
-  TraceSession,
-  type TraceSessionStatus,
-} from "./session.js";
+import { TraceSession, type TraceSessionStatus } from "./session.js";
 
 /**
  * Traceability Engine entry point (E-010 / P-008).
@@ -69,8 +62,7 @@ export class TraceabilityEngine {
         const empty = buildTraceGraph({ nodes: [], links: [] });
         this.lastExport = Object.freeze({
           kind: "TraceExport" as const,
-          matrixSourceOfTruth:
-            "architecture/03_TRACEABILITY_MATRIX.md" as const,
+          matrixSourceOfTruth: "architecture/03_TRACEABILITY_MATRIX.md" as const,
           graph: empty,
           provenance: Object.freeze([] as const),
           openUnknownKeys: Object.freeze([] as const),
@@ -84,8 +76,7 @@ export class TraceabilityEngine {
       const empty = buildTraceGraph({ nodes: [], links: [] });
       this.lastExport = Object.freeze({
         kind: "TraceExport" as const,
-        matrixSourceOfTruth:
-          "architecture/03_TRACEABILITY_MATRIX.md" as const,
+        matrixSourceOfTruth: "architecture/03_TRACEABILITY_MATRIX.md" as const,
         graph: empty,
         provenance: Object.freeze([
           createProvenanceRecord({

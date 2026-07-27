@@ -15,7 +15,11 @@ export function validateTraceGraph(graph: TraceGraph): void {
     );
   }
 
-  if (!Object.isFrozen(graph) || !Object.isFrozen(graph.nodes) || !Object.isFrozen(graph.links)) {
+  if (
+    !Object.isFrozen(graph) ||
+    !Object.isFrozen(graph.nodes) ||
+    !Object.isFrozen(graph.links)
+  ) {
     throwTraceabilityError(
       TraceabilityEngineErrorCode.InvalidTraceInput,
       "TraceGraph must be immutable",

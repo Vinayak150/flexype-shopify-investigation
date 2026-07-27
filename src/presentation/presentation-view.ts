@@ -73,10 +73,7 @@ export function viewAgreesWithReport(view: PresentationReadyView): boolean {
   });
 
   return view.report.detectionResultSet.results.every((result) => {
-    if (
-      result.subject.kind === "Theme" ||
-      result.subject.kind === "StoreInformation"
-    ) {
+    if (result.subject.kind === "Theme" || result.subject.kind === "StoreInformation") {
       return hasStoreInformationSection;
     }
     return findingOutcomes.includes(result.outcome);

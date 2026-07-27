@@ -19,11 +19,7 @@ import { validateConfigurationSnapshot } from "./validation.js";
 
 export type ConfigurationElection = "deferred" | "pursued";
 
-export type ConfigurationSessionStatus =
-  | "closed"
-  | "open"
-  | "loaded"
-  | "sealed";
+export type ConfigurationSessionStatus = "closed" | "open" | "loaded" | "sealed";
 
 /**
  * Optional Configuration session: open → retrieve → normalize → freeze.
@@ -153,9 +149,7 @@ export class ConfigurationSession {
         createConfigurationMetadata({
           sourceKind: "ExternalOptional",
           note:
-            error instanceof Error
-              ? error.message
-              : "Configuration retrieval failed",
+            error instanceof Error ? error.message : "Configuration retrieval failed",
         }),
         this.hints.map((hint) => hint.productId),
       );

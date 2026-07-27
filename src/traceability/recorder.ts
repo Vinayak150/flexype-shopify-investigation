@@ -6,10 +6,7 @@ import {
   type TraceLink,
   type TraceNode,
 } from "./graph.js";
-import {
-  createProvenanceRecord,
-  type ProvenanceRecord,
-} from "./provenance.js";
+import { createProvenanceRecord, type ProvenanceRecord } from "./provenance.js";
 import type { ObligationId } from "./obligation.js";
 import {
   TraceabilityEngineErrorCode,
@@ -46,11 +43,7 @@ export class TraceRecorder {
     return node;
   }
 
-  recordLink(
-    linkKind: TraceLinkKind,
-    from: TraceNode,
-    to: TraceNode,
-  ): TraceLink {
+  recordLink(linkKind: TraceLinkKind, from: TraceNode, to: TraceNode): TraceLink {
     this.assertWritable();
     const link = createTraceLink({
       linkKind,
@@ -80,9 +73,7 @@ export class TraceRecorder {
   }): ProvenanceRecord {
     this.assertWritable();
     const record = createProvenanceRecord(input);
-    const existing = this.provenance.find(
-      (item) => item.recordId === record.recordId,
-    );
+    const existing = this.provenance.find((item) => item.recordId === record.recordId);
     if (existing !== undefined) {
       return existing;
     }
@@ -93,39 +84,25 @@ export class TraceRecorder {
   /**
    * Convenience: Evidence → Detection lineage from existing ids only.
    */
-  recordEvidenceToDetection(
-    evidenceKey: string,
-    detectionResultKey: string,
-  ): void {
+  recordEvidenceToDetection(evidenceKey: string, detectionResultKey: string): void {
     const evidence = this.recordNode(TraceNodeKind.EvidenceItem, evidenceKey);
     const detection = this.recordNode(
       TraceNodeKind.DetectionResult,
       detectionResultKey,
     );
-    this.recordLink(
-      TraceLinkKind.EvidenceSupportsDetection,
-      evidence,
-      detection,
-    );
+    this.recordLink(TraceLinkKind.EvidenceSupportsDetection, evidence, detection);
   }
 
   /**
    * Convenience: Detection → Report lineage from existing ids only.
    */
-  recordDetectionToReport(
-    detectionResultKey: string,
-    reportKey: string,
-  ): void {
+  recordDetectionToReport(detectionResultKey: string, reportKey: string): void {
     const detection = this.recordNode(
       TraceNodeKind.DetectionResult,
       detectionResultKey,
     );
     const report = this.recordNode(TraceNodeKind.DiagnosticReport, reportKey);
-    this.recordLink(
-      TraceLinkKind.DetectionIncludedInReport,
-      detection,
-      report,
-    );
+    this.recordLink(TraceLinkKind.DetectionIncludedInReport, detection, report);
   }
 
   recordObligationReference(
@@ -133,16 +110,9 @@ export class TraceRecorder {
     artifactKind: TraceNodeKind,
     artifactKey: string,
   ): void {
-    const obligation = this.recordNode(
-      TraceNodeKind.Obligation,
-      String(obligationId),
-    );
+    const obligation = this.recordNode(TraceNodeKind.Obligation, String(obligationId));
     const artifact = this.recordNode(artifactKind, artifactKey);
-    this.recordLink(
-      TraceLinkKind.ObligationReferencesArtifact,
-      obligation,
-      artifact,
-    );
+    this.recordLink(TraceLinkKind.ObligationReferencesArtifact, obligation, artifact);
   }
 
   getNodes(): readonly TraceNode[] {

@@ -3,24 +3,13 @@ import {
   throwTraceabilityError,
 } from "./engine-errors.js";
 import { TraceExporter, type TraceExport } from "./exporter.js";
-import {
-  buildTraceGraph,
-  type TraceGraph,
-} from "./graph.js";
-import {
-  recordArtifactLineage,
-  type ArtifactLineageInput,
-} from "./lineage.js";
+import { buildTraceGraph, type TraceGraph } from "./graph.js";
+import { recordArtifactLineage, type ArtifactLineageInput } from "./lineage.js";
 import { TraceRecorder } from "./recorder.js";
 import { validateTraceGraph } from "./validation.js";
 
 export type TraceSessionStatus =
-  | "closed"
-  | "open"
-  | "recorded"
-  | "built"
-  | "exported"
-  | "ended";
+  "closed" | "open" | "recorded" | "built" | "exported" | "ended";
 
 /**
  * Optional TraceSession: begin → record → buildGraph → export → end.

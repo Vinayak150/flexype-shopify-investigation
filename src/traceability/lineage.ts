@@ -1,7 +1,4 @@
-import {
-  TraceLinkKind,
-  TraceNodeKind,
-} from "./graph.js";
+import { TraceLinkKind, TraceNodeKind } from "./graph.js";
 import type { ObligationId } from "./obligation.js";
 import type { TraceRecorder } from "./recorder.js";
 
@@ -60,10 +57,7 @@ export function recordArtifactLineage(
       detection.detectionResultKey,
     );
     for (const evidenceKey of detection.supportingEvidenceKeys ?? []) {
-      const evidence = recorder.recordNode(
-        TraceNodeKind.EvidenceItem,
-        evidenceKey,
-      );
+      const evidence = recorder.recordNode(TraceNodeKind.EvidenceItem, evidenceKey);
       recorder.recordLink(
         TraceLinkKind.EvidenceSupportsDetection,
         evidence,
@@ -85,14 +79,8 @@ export function recordArtifactLineage(
   }
 
   if (input.reportKey !== undefined && input.viewKey !== undefined) {
-    const report = recorder.recordNode(
-      TraceNodeKind.DiagnosticReport,
-      input.reportKey,
-    );
-    const view = recorder.recordNode(
-      TraceNodeKind.PresentationView,
-      input.viewKey,
-    );
+    const report = recorder.recordNode(TraceNodeKind.DiagnosticReport, input.reportKey);
+    const view = recorder.recordNode(TraceNodeKind.PresentationView, input.viewKey);
     recorder.recordLink(TraceLinkKind.ReportProjectedToView, report, view);
   } else if (input.reportKey !== undefined) {
     recorder.recordNode(TraceNodeKind.DiagnosticReport, input.reportKey);
@@ -125,11 +113,7 @@ export function recordArtifactLineage(
 
   for (const unknownId of input.openUnknownIds ?? []) {
     const unknown = recorder.recordNode(TraceNodeKind.DomainUnknown, unknownId);
-    recorder.recordLink(
-      TraceLinkKind.UnknownTrackedOpen,
-      investigation,
-      unknown,
-    );
+    recorder.recordLink(TraceLinkKind.UnknownTrackedOpen, investigation, unknown);
   }
 
   for (const explanation of input.explanationLinks ?? []) {
@@ -138,10 +122,7 @@ export function recordArtifactLineage(
       explanation.definitionId,
     );
     for (const evidenceKey of explanation.supportingEvidenceKeys ?? []) {
-      const evidence = recorder.recordNode(
-        TraceNodeKind.EvidenceItem,
-        evidenceKey,
-      );
+      const evidence = recorder.recordNode(TraceNodeKind.EvidenceItem, evidenceKey);
       recorder.recordLink(
         TraceLinkKind.ExplanationReferencesEvidence,
         explanationNode,
@@ -159,11 +140,7 @@ export function recordArtifactLineage(
 
   for (const adrId of input.adrIds ?? []) {
     const adr = recorder.recordNode(TraceNodeKind.Adr, adrId);
-    recorder.recordLink(
-      TraceLinkKind.AdrGovernsArtifact,
-      adr,
-      investigation,
-    );
+    recorder.recordLink(TraceLinkKind.AdrGovernsArtifact, adr, investigation);
   }
 
   for (const mapping of input.packageRuntimeMaps ?? []) {
