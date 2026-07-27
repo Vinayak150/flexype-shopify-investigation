@@ -4,7 +4,10 @@ import {
   createInvestigationId,
   createStorefrontTarget,
 } from "../../src/investigation/index.js";
-import { createObservationAffordance } from "../../src/observation/index.js";
+import {
+  createObservabilityDescriptors,
+  createObservationAffordance,
+} from "../../src/observation/index.js";
 
 describe("P-002 Observation domain contracts", () => {
   it("creates ObservationAffordance bound to InvestigationId and StorefrontTarget", () => {
@@ -14,6 +17,12 @@ describe("P-002 Observation domain contracts", () => {
       investigationId,
       storefrontTarget,
       isPubliclyObservable: true,
+      descriptors: createObservabilityDescriptors({
+        documentReachable: true,
+        metadataReachable: true,
+        traversalCapable: true,
+        queryCapable: true,
+      }),
     });
 
     expect(affordance.investigationId).toBe(investigationId);
