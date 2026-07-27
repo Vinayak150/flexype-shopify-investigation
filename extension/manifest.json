@@ -6,16 +6,17 @@
   "permissions": ["activeTab", "tabs", "scripting"],
   "host_permissions": ["<all_urls>"],
   "background": {
-    "service_worker": "dist/extension/runtime/service-worker.js",
+    "service_worker": "runtime/service-worker.js",
     "type": "module"
   },
   "action": {
-    "default_title": "FlexyPe Shopify Investigator"
+    "default_title": "FlexyPe Shopify Investigator",
+    "default_popup": "popup/popup.html"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["dist/extension/content/storefront-agent.js"],
+      "js": ["content/storefront-agent.js"],
       "run_at": "document_idle"
     }
   ]

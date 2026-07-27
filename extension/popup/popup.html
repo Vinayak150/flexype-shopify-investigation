@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FlexyPe Shopify Investigator</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="header__title-block">
+        <h1 class="header__title">FlexyPe Shopify Investigator</h1>
+        <p class="header__subtitle">Shopify storefront diagnostics</p>
+      </div>
+      <div id="status-indicator" class="status-indicator status-indicator--ready" aria-live="polite">
+        <span class="status-indicator__dot"></span>
+        <span id="status-label" class="status-indicator__label">Ready</span>
+      </div>
+    </header>
+
+    <main id="popup-content" class="popup-content">
+      <section id="empty-state" class="card card--empty">
+        <p class="empty-state__message">No investigation available.</p>
+        <p class="empty-state__hint">Start an investigation from the extension.</p>
+      </section>
+
+      <div id="investigation-view" class="investigation-view" hidden>
+        <section class="card" aria-labelledby="store-info-heading">
+          <h2 id="store-info-heading" class="card__heading">Store Information</h2>
+          <dl class="info-list">
+            <div class="info-list__row">
+              <dt>Store URL</dt>
+              <dd id="store-url">—</dd>
+            </div>
+            <div class="info-list__row">
+              <dt>Theme</dt>
+              <dd id="store-theme">—</dd>
+            </div>
+            <div class="info-list__row">
+              <dt>Page type</dt>
+              <dd id="store-page-type">—</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="card" aria-labelledby="products-heading">
+          <h2 id="products-heading" class="card__heading">Product Detection</h2>
+          <div id="product-list" class="product-list"></div>
+        </section>
+
+        <section class="card" aria-labelledby="summary-heading">
+          <h2 id="summary-heading" class="card__heading">Investigation Summary</h2>
+          <dl class="info-list">
+            <div class="info-list__row">
+              <dt>Completion state</dt>
+              <dd id="completion-state">—</dd>
+            </div>
+            <div class="info-list__row">
+              <dt>Completeness</dt>
+              <dd id="completeness-label">—</dd>
+            </div>
+          </dl>
+          <ul id="completeness-flags" class="flag-list"></ul>
+        </section>
+      </div>
+    </main>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

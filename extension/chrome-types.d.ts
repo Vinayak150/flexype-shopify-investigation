@@ -20,6 +20,11 @@ declare namespace chrome {
       ): void;
     };
 
+    function sendMessage(
+      message: unknown,
+      responseCallback: (response: unknown) => void,
+    ): void;
+
     interface MessageSender {
       tab?: tabs.Tab;
     }

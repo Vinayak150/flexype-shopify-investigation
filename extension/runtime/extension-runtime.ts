@@ -13,6 +13,12 @@ import {
   getActiveTab,
 } from "../adapters/chrome-tab-adapter.js";
 import { createChromeDomPorts } from "../adapters/chrome-dom-adapter.js";
+import {
+  projectPresentationForPopup,
+  type PopupInvestigationSummary,
+  type PopupProductStatus,
+  type PopupStoreInfo,
+} from "../popup/presentation-projection.js";
 
 export interface ExtensionRuntimeStatusPayload {
   readonly extensionReady: boolean;
@@ -23,6 +29,12 @@ export interface ExtensionRuntimeStatusPayload {
   readonly completionDisposition?: string;
 }
 
+export type {
+  PopupInvestigationSummary,
+  PopupProductStatus,
+  PopupStoreInfo,
+} from "../popup/presentation-projection.js";
+
 export interface ExtensionPresentationViewPayload {
   readonly kind: "PresentationReadyView";
   readonly investigationId: string;
@@ -30,6 +42,9 @@ export interface ExtensionPresentationViewPayload {
   readonly unknownVisible: boolean;
   readonly notDetectedVisible: boolean;
   readonly sectionOrder: readonly string[];
+  readonly store: PopupStoreInfo;
+  readonly products: readonly PopupProductStatus[];
+  readonly summary: PopupInvestigationSummary;
 }
 
 export interface ExtensionInvestigationStartedPayload {
@@ -104,19 +119,16 @@ export class ExtensionRuntime {
   }
 
   getPresentationView(): ExtensionPresentationViewPayload | undefined {
-    const view = this.lastResult?.view;
-    if (view === undefined) {
+    const lastResult = this.lastResult;
+    const view = lastResult?.view;
+    if (view === undefined || lastResult === undefined) {
       return undefined;
     }
 
-    return Object.freeze({
-      kind: "PresentationReadyView",
-      investigationId: String(view.report.investigationId),
-      completenessLabel: view.completenessLabel,
-      unknownVisible: view.unknownVisible,
-      notDetectedVisible: view.notDetectedVisible,
-      sectionOrder: Object.freeze([...view.sectionOrder]),
-    });
+    return projectPresentationForPopup(
+      view,
+      lastResult.context.completionDisposition,
+    );
   }
 
   shutdown(): void {
