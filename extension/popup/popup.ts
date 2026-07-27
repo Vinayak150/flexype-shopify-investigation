@@ -5,16 +5,22 @@
  * Must not scan storefronts, collect Evidence, or run Detection.
  */
 import type {
+  ExtensionInvestigationStartedPayload,
   ExtensionPresentationViewPayload,
   ExtensionRuntimeStatusPayload,
 } from "../runtime/extension-runtime.js";
 
 const ExtensionCommand = {
+  START_INVESTIGATION: "START_INVESTIGATION",
   GET_STATUS: "GET_STATUS",
   GET_PRESENTATION_VIEW: "GET_PRESENTATION_VIEW",
 } as const;
 
 type HeaderStatus = "Ready" | "Running" | "Completed" | "Partial";
+
+type CommandResult<T> =
+  | { readonly ok: true; readonly payload: T }
+  | { readonly ok: false; readonly error: string };
 
 interface SuccessResponse<T> {
   readonly ok: true;
@@ -22,27 +28,39 @@ interface SuccessResponse<T> {
   readonly payload: T;
 }
 
-function isSuccessResponse<T>(value: unknown): value is SuccessResponse<T> {
-  return (
-    value !== null &&
-    typeof value === "object" &&
-    (value as SuccessResponse<T>).ok === true &&
-    "payload" in (value as SuccessResponse<T>)
-  );
+interface ErrorResponse {
+  readonly ok: false;
+  readonly error: string;
 }
 
-async function sendCommand<T>(command: string): Promise<T | undefined> {
+type ExtensionResponse<T> = SuccessResponse<T> | ErrorResponse;
+
+function isExtensionResponse<T>(value: unknown): value is ExtensionResponse<T> {
+  return value !== null && typeof value === "object" && "ok" in (value as ExtensionResponse<T>);
+}
+
+async function sendCommand<T>(command: string): Promise<CommandResult<T>> {
   return new Promise((resolve) => {
     chrome.runtime.sendMessage({ command }, (response: unknown) => {
       if (chrome.runtime.lastError !== undefined) {
-        resolve(undefined);
+        resolve({
+          ok: false,
+          error: chrome.runtime.lastError.message ?? "Extension message failed",
+        });
         return;
       }
-      if (!isSuccessResponse<T>(response)) {
-        resolve(undefined);
+
+      if (!isExtensionResponse<T>(response)) {
+        resolve({ ok: false, error: "Invalid extension response" });
         return;
       }
-      resolve(response.payload);
+
+      if (response.ok) {
+        resolve({ ok: true, payload: response.payload });
+        return;
+      }
+
+      resolve({ ok: false, error: response.error });
     });
   });
 }
@@ -94,6 +112,18 @@ function setText(id: string, value: string | undefined, fallback = "—"): void 
   }
 }
 
+function setRunningHeader(): void {
+  const indicator = document.getElementById("status-indicator");
+  const label = document.getElementById("status-label");
+
+  if (indicator !== null) {
+    indicator.className = `status-indicator ${statusClassName("Running")}`;
+  }
+  if (label !== null) {
+    label.textContent = "Running";
+  }
+}
+
 function renderHeader(status: ExtensionRuntimeStatusPayload): void {
   const headerStatus = deriveHeaderStatus(status);
   const indicator = document.getElementById("status-indicator");
@@ -104,6 +134,31 @@ function renderHeader(status: ExtensionRuntimeStatusPayload): void {
   }
   if (label !== null) {
     label.textContent = headerStatus;
+  }
+}
+
+function showActionError(message: string): void {
+  const errorElement = document.getElementById("action-error");
+  if (errorElement === null) {
+    return;
+  }
+  errorElement.textContent = message;
+  errorElement.hidden = false;
+}
+
+function clearActionError(): void {
+  const errorElement = document.getElementById("action-error");
+  if (errorElement === null) {
+    return;
+  }
+  errorElement.textContent = "";
+  errorElement.hidden = true;
+}
+
+function setRunButtonDisabled(disabled: boolean): void {
+  const button = document.getElementById("run-investigation");
+  if (button instanceof HTMLButtonElement) {
+    button.disabled = disabled;
   }
 }
 
@@ -214,24 +269,74 @@ function renderEmptyState(): void {
   }
 }
 
-async function loadPopup(): Promise<void> {
-  const status = await sendCommand<ExtensionRuntimeStatusPayload>(
+async function refreshPresentation(): Promise<void> {
+  const statusResult = await sendCommand<ExtensionRuntimeStatusPayload>(
     ExtensionCommand.GET_STATUS,
   );
-  if (status !== undefined) {
-    renderHeader(status);
+  if (statusResult.ok) {
+    renderHeader(statusResult.payload);
   }
 
-  const view = await sendCommand<ExtensionPresentationViewPayload | undefined>(
+  const viewResult = await sendCommand<ExtensionPresentationViewPayload | undefined>(
     ExtensionCommand.GET_PRESENTATION_VIEW,
   );
 
+  if (!viewResult.ok) {
+    showActionError(viewResult.error);
+    renderEmptyState();
+    return;
+  }
+
+  const view = viewResult.payload;
   if (view === undefined || view === null) {
     renderEmptyState();
     return;
   }
 
+  clearActionError();
   renderInvestigationView(view);
+}
+
+async function handleRunInvestigation(): Promise<void> {
+  clearActionError();
+  setRunButtonDisabled(true);
+  setRunningHeader();
+
+  const startResult = await sendCommand<ExtensionInvestigationStartedPayload>(
+    ExtensionCommand.START_INVESTIGATION,
+  );
+
+  if (!startResult.ok) {
+    showActionError(startResult.error);
+    await refreshPresentation();
+    setRunButtonDisabled(false);
+    return;
+  }
+
+  await refreshPresentation();
+  setRunButtonDisabled(false);
+}
+
+function bindRunInvestigation(): void {
+  const button = document.getElementById("run-investigation");
+  if (button === null) {
+    return;
+  }
+
+  button.addEventListener("click", () => {
+    void handleRunInvestigation().catch((error: unknown) => {
+      showActionError(
+        error instanceof Error ? error.message : "Investigation request failed",
+      );
+      setRunButtonDisabled(false);
+      void refreshPresentation();
+    });
+  });
+}
+
+async function loadPopup(): Promise<void> {
+  bindRunInvestigation();
+  await refreshPresentation();
 }
 
 void loadPopup().catch(() => {

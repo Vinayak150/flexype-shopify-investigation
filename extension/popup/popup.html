@@ -19,9 +19,16 @@
     </header>
 
     <main id="popup-content" class="popup-content">
+      <section id="action-bar" class="card card--actions">
+        <button id="run-investigation" type="button" class="run-button">
+          Run Investigation
+        </button>
+        <p id="action-error" class="action-error" hidden></p>
+      </section>
+
       <section id="empty-state" class="card card--empty">
         <p class="empty-state__message">No investigation available.</p>
-        <p class="empty-state__hint">Start an investigation from the extension.</p>
+        <p class="empty-state__hint">Run an investigation on the active storefront tab.</p>
       </section>
 
       <div id="investigation-view" class="investigation-view" hidden>

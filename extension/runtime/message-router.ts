@@ -59,6 +59,7 @@ export class MessageRouter {
     try {
       switch (message.command) {
         case ExtensionCommand.START_INVESTIGATION: {
+          await this.runtime.initialize();
           const payload = await this.runtime.startInvestigation();
           return Object.freeze({
             ok: true,

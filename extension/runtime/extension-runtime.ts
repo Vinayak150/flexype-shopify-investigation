@@ -11,6 +11,7 @@ import {
 import {
   createChromeBrowserPorts,
   getActiveTab,
+  isLikelyPublicStorefrontUrl,
 } from "../adapters/chrome-tab-adapter.js";
 import { createChromeDomPorts } from "../adapters/chrome-dom-adapter.js";
 import {
@@ -71,16 +72,32 @@ export class ExtensionRuntime {
   }
 
   async startInvestigation(): Promise<ExtensionInvestigationStartedPayload> {
-    await this.ensureSystemRuntimeForActiveTab();
     const tab = await getActiveTab();
     if (tab === undefined) {
       throw new Error("No active tab available for Investigation");
     }
 
-    const result = await this.requireSystemRuntime().runInvestigation(tab.url, {
-      kind: "OperatorIntent",
-      label: "chrome-extension",
-    });
+    if (!isLikelyPublicStorefrontUrl(tab.url)) {
+      throw new Error("Active tab is not a supported storefront page");
+    }
+
+    await this.ensureSystemRuntimeForActiveTab();
+
+    let result: IntegratedInvestigationResult;
+    try {
+      result = await this.requireSystemRuntime().runInvestigation(tab.url, {
+        kind: "OperatorIntent",
+        label: "chrome-extension",
+      });
+    } catch (error) {
+      throw new Error(
+        error instanceof Error ? error.message : "Investigation failed",
+      );
+    }
+
+    if (result.view === undefined) {
+      throw new Error("Investigation completed without presentation results");
+    }
 
     this.lastResult = result;
     this.activeTabUrl = tab.url;
