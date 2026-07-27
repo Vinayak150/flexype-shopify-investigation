@@ -2,7 +2,7 @@
 
 ![Tests](https://img.shields.io/badge/tests-242%20passing-success)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)
-![Release](https://img.shields.io/badge/release-v1.0.0-blue)
+![Release](https://img.shields.io/badge/release-0.1.0-blue)
 ![Architecture](https://img.shields.io/badge/architecture-frozen-purple)
 
 A Chrome Manifest V3 extension for Shopify storefront diagnostics. The system observes public Storefront signals, normalizes immutable Evidence, evaluates approved Detection definitions, and produces explainable Diagnostic Reports for Product Support and Sales engineers.
@@ -327,47 +327,56 @@ dist/
 
 Requirements:
 
-
-Node.js 22+
-
+- Node.js 22+
 
 Install:
 
 ```bash
 npm install
-Development Commands
+```
+
+# Development Commands
+
+```bash
 npm run typecheck
 npm run lint
 npm run format:check
 npm test
 npm run build
 npm run release:check
-Command	Purpose
-npm run typecheck	Strict TypeScript validation
-npm run lint	ESLint checks
-npm run format:check	Prettier validation
-npm test	Vitest suite
-npm run build	Extension build pipeline
-npm run release:check	Full release verification
-Validation
+```
+
+| Command | Purpose |
+|---|---|
+| npm run typecheck | Strict TypeScript validation |
+| npm run lint | ESLint checks |
+| npm run format:check | Prettier validation |
+| npm test | Vitest suite |
+| npm run build | Extension build pipeline |
+| npm run release:check | Full release verification |
+
+# Validation
 
 Current verification:
 
-Check	Result
-TypeScript strict	✅ Passing
-ESLint	✅ Passing
-Tests	✅ 242 passing
-Build	✅ Passing
+| Check | Result |
+|---|---|
+| TypeScript strict | ✅ Passing |
+| ESLint | ✅ Passing |
+| Tests | ✅ 242 passing |
+| Build | ✅ Passing |
+
 Test coverage includes:
 
-Package unit tests
-Extension runtime tests
-Chrome adapter tests
-Storefront observation tests
-Detection verification
-Disabled integration detection
-Release readiness checks
-Validation Scenarios
+- Package unit tests
+- Extension runtime tests
+- Chrome adapter tests
+- Storefront observation tests
+- Detection verification
+- Disabled integration detection
+- Release readiness checks
+
+# Validation Scenarios
 
 The extension has been verified against multiple Shopify storefront scenarios:
 
@@ -402,19 +411,22 @@ Detection decisions are derived from observed storefront signals and evidence re
 - `dist/` is generated output only.
 - Core diagnostics rely on public storefront observation.
 - No Admin API dependency exists for Parts 1–3 requirements.
-Known Limitations
-Theme information depends on public storefront availability.
-Shopify storefronts may expose different levels of metadata.
-Configuration API integration remains optional scope.
-Chrome Web Store publishing is outside current scope.
-Future Work
+
+# Known Limitations
+
+- Theme information depends on public storefront availability.
+- Shopify storefronts may expose different levels of metadata.
+- Configuration API integration remains optional scope.
+- Chrome Web Store publishing is outside current scope.
+
+# Future Work
 
 Possible future improvements:
 
-Optional FlexyPe configuration retrieval
-Additional storefront signal adapters
-Chrome Web Store deployment
-Expanded operator workflows
+- Optional FlexyPe configuration retrieval
+- Additional storefront signal adapters
+- Chrome Web Store deployment
+- Expanded operator workflows
 
 These do not change the frozen architecture.
 
