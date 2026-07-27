@@ -16,11 +16,11 @@ function createMockRuntime(): ExtensionRuntime {
       state: "Completed",
       stageCount: 5,
     })),
-    getStatus: vi.fn(() => ({
+    getStatus: vi.fn(async () => ({
       extensionReady: true,
       systemRuntimeStatus: "ready",
     })),
-    getPresentationView: vi.fn(() => ({
+    getPresentationView: vi.fn(async () => ({
       kind: "PresentationReadyView",
       investigationId: "inv-1",
     })),

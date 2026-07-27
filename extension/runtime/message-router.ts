@@ -68,7 +68,7 @@ export class MessageRouter {
           });
         }
         case ExtensionCommand.GET_STATUS: {
-          const payload = this.runtime.getStatus();
+          const payload = await this.runtime.getStatus();
           return Object.freeze({
             ok: true,
             command: message.command,
@@ -76,7 +76,7 @@ export class MessageRouter {
           });
         }
         case ExtensionCommand.GET_PRESENTATION_VIEW: {
-          const payload = this.runtime.getPresentationView();
+          const payload = await this.runtime.getPresentationView();
           return Object.freeze({
             ok: true,
             command: message.command,

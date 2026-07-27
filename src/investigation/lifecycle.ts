@@ -1,5 +1,3 @@
-import { randomUUID } from "node:crypto";
-
 import { createInvestigationId } from "./identifiers.js";
 import {
   createInvestigationContext,
@@ -62,7 +60,9 @@ export class InvestigationLifecycle {
         : input.storefrontTarget;
 
     const context = createInvestigationContext({
-      investigationId: createInvestigationId(input.investigationId ?? randomUUID()),
+      investigationId: createInvestigationId(
+        input.investigationId ?? globalThis.crypto.randomUUID(),
+      ),
       storefrontTarget,
       state: InvestigationState.NotStarted,
       ...(input.operator !== undefined ? { operator: input.operator } : {}),

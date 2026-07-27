@@ -48,6 +48,34 @@ declare namespace chrome {
       message: unknown,
       responseCallback: (response: unknown) => void,
     ): void;
+
+    const onRemoved: {
+      addListener(callback: (tabId: number) => void): void;
+    };
+  }
+
+  namespace scripting {
+    interface InjectionTarget {
+      tabId: number;
+    }
+
+    type ScriptWorld = "ISOLATED" | "MAIN";
+
+    interface ScriptInjection {
+      target: InjectionTarget;
+      files?: readonly string[];
+      func?: () => unknown;
+      world?: ScriptWorld;
+    }
+
+    interface ScriptInjectionResult {
+      result?: unknown;
+    }
+
+    function executeScript(
+      injection: ScriptInjection,
+      callback: (results: readonly ScriptInjectionResult[]) => void,
+    ): void;
   }
 
   namespace action {

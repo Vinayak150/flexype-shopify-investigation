@@ -37,7 +37,7 @@ async function sendCommand<T>(command: string): Promise<
   });
 }
 
-function setText(id: string, value: string | undefined, fallback = "—"): void {
+function setText(id: string, value: string | undefined, fallback = "Unknown"): void {
   const element = document.getElementById(id);
   if (element !== null) {
     element.textContent = value !== undefined && value.length > 0 ? value : fallback;
@@ -180,7 +180,12 @@ function renderInvestigationView(view: ExtensionPresentationViewPayload): void {
   }
 
   setText("store-url", view.store.storeUrl);
-  setText("store-theme", view.store.theme);
+  setText("store-shop-name", view.store.shopName);
+  setText("store-currency", view.store.baseCurrency);
+  setText("store-country", view.store.country);
+  setText("store-locale", view.store.locale);
+  setText("store-shopify-domain", view.store.shopifyDomain);
+  setText("store-theme", view.store.themeName);
   setText("store-page-type", view.store.pageType);
   setText("completion-state", view.summary.completionState);
   setText("completeness-label", view.summary.completenessLabel);

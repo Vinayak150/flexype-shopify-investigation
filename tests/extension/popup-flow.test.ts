@@ -7,6 +7,18 @@ import {
   resolvePopupDisplayState,
   statusClassName,
 } from "../../extension/popup/popup-view-model.js";
+import type { PopupStoreInfo } from "../../extension/popup/presentation-projection.js";
+
+const UNKNOWN_STORE: PopupStoreInfo = Object.freeze({
+  storeUrl: "Unknown",
+  shopName: "Unknown",
+  baseCurrency: "Unknown",
+  country: "Unknown",
+  locale: "Unknown",
+  shopifyDomain: "Unknown",
+  themeName: "Unknown",
+  pageType: "Unknown",
+});
 
 describe("extension popup flow", () => {
   it("shows empty state when no presentation view exists", () => {
@@ -42,7 +54,7 @@ describe("extension popup flow", () => {
         unknownVisible: false,
         notDetectedVisible: false,
         sectionOrder: [],
-        store: {},
+        store: UNKNOWN_STORE,
         products: [],
         summary: {
           completionState: "Completed",
@@ -80,7 +92,7 @@ describe("extension popup flow", () => {
           unknownVisible: true,
           notDetectedVisible: false,
           sectionOrder: [],
-          store: {},
+          store: UNKNOWN_STORE,
           products: [],
           summary: {
             completionState: "Completed Partial",
@@ -130,6 +142,7 @@ describe("extension popup flow", () => {
   it("maps product status labels to presentation classes only", () => {
     expect(productStatusClass("Detected")).toBe("product-item__status--detected");
     expect(productStatusClass("Not Detected")).toBe("product-item__status--not-detected");
+    expect(productStatusClass("Disabled")).toBe("product-item__status--disabled");
     expect(productStatusClass("Unknown")).toBe("product-item__status--unknown");
   });
 

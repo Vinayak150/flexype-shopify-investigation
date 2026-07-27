@@ -3,8 +3,8 @@
   "compilerOptions": {
     "noEmit": false,
     "rootDir": ".",
-    "outDir": "./dist"
+    "outDir": "./dist/extension"
   },
   "include": ["src/**/*.ts", "extension/**/*.ts"],
-  "exclude": ["node_modules", "dist", "tests"]
+  "exclude": ["node_modules", "dist", "tests", "extension/content/storefront-agent.ts"]
 }

@@ -239,6 +239,11 @@ body {
   color: #b91c1c;
 }
 
+.product-item__status--disabled {
+  background: #fef3c7;
+  color: #92400e;
+}
+
 .product-item__status--unknown {
   background: #fff7ed;
   color: var(--partial);

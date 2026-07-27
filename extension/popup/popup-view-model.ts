@@ -48,6 +48,9 @@ export function productStatusClass(status: string): string {
   if (normalized === "not detected") {
     return "product-item__status--not-detected";
   }
+  if (normalized === "disabled") {
+    return "product-item__status--disabled";
+  }
   return "product-item__status--unknown";
 }
 

@@ -24,6 +24,10 @@ chrome.runtime.onMessage.addListener((_message, _sender, sendResponse) => {
   return true;
 });
 
+chrome.tabs.onRemoved.addListener((tabId) => {
+  extensionRuntime.removeInvestigationForTab(tabId);
+});
+
 chrome.action.onClicked.addListener(() => {
   void router
     .handle({ command: ExtensionCommand.START_INVESTIGATION })

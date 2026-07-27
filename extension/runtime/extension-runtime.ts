@@ -13,7 +13,14 @@ import {
   getActiveTab,
   isLikelyPublicStorefrontUrl,
 } from "../adapters/chrome-tab-adapter.js";
-import { createChromeDomPorts } from "../adapters/chrome-dom-adapter.js";
+import { ensureStorefrontAgent } from "../adapters/chrome-content-script-adapter.js";
+import {
+  createChromeDomPorts,
+  probeStorefrontObservationWithRetry,
+} from "../adapters/chrome-dom-adapter.js";
+import { createChromeFactSource } from "../adapters/chrome-fact-source.js";
+import type { StorefrontMetadataSnapshot } from "../adapters/store-metadata.js";
+import type { StorefrontDisabledSignals } from "../adapters/storefront-observation.js";
 import {
   projectPresentationForPopup,
   type PopupInvestigationSummary,
@@ -56,10 +63,18 @@ export interface ExtensionInvestigationStartedPayload {
   readonly stageCount: number;
 }
 
+interface TabInvestigationState {
+  readonly url: string;
+  readonly result?: IntegratedInvestigationResult;
+  readonly metadata?: StorefrontMetadataSnapshot;
+  readonly disabledSignals?: StorefrontDisabledSignals;
+  readonly updatedAt: number;
+}
+
 export class ExtensionRuntime {
   private systemRuntime: SystemRuntime | undefined;
-  private lastResult: IntegratedInvestigationResult | undefined;
-  private activeTabUrl: string | undefined;
+  private activeRuntimeTabId: number | undefined;
+  private readonly investigations = new Map<number, TabInvestigationState>();
   private initialized = false;
 
   async initialize(): Promise<void> {
@@ -83,6 +98,10 @@ export class ExtensionRuntime {
 
     await this.ensureSystemRuntimeForActiveTab();
 
+    await ensureStorefrontAgent(tab.tabId);
+
+    const observationSnapshot = await probeStorefrontObservationWithRetry(tab.tabId);
+
     let result: IntegratedInvestigationResult;
     try {
       result = await this.requireSystemRuntime().runInvestigation(tab.url, {
@@ -99,8 +118,17 @@ export class ExtensionRuntime {
       throw new Error("Investigation completed without presentation results");
     }
 
-    this.lastResult = result;
-    this.activeTabUrl = tab.url;
+    this.investigations.set(tab.tabId, Object.freeze({
+      url: tab.url,
+      result,
+      ...(observationSnapshot?.storeMetadata !== undefined
+        ? { metadata: observationSnapshot.storeMetadata }
+        : {}),
+      ...(observationSnapshot?.disabledSignals !== undefined
+        ? { disabledSignals: observationSnapshot.disabledSignals }
+        : {}),
+      updatedAt: Date.now(),
+    }));
 
     return Object.freeze({
       investigationId: String(result.context.investigationId),
@@ -113,21 +141,25 @@ export class ExtensionRuntime {
     });
   }
 
-  getStatus(): ExtensionRuntimeStatusPayload {
+  async getStatus(): Promise<ExtensionRuntimeStatusPayload> {
+    const tab = await getActiveTab();
     const runtime = this.systemRuntime;
     const ready = runtime?.getStatus() === "ready";
+    const tabState =
+      tab !== undefined ? this.investigations.get(tab.tabId) : undefined;
+    const result = tabState?.result;
 
     return Object.freeze({
       extensionReady: this.initialized && ready,
       systemRuntimeStatus: runtime?.getStatus() ?? "uninitialized",
-      ...(this.activeTabUrl !== undefined ? { activeTabUrl: this.activeTabUrl } : {}),
-      ...(this.lastResult !== undefined
+      ...(tab?.url !== undefined ? { activeTabUrl: tab.url } : {}),
+      ...(result !== undefined
         ? {
-            investigationId: String(this.lastResult.context.investigationId),
-            investigationState: this.lastResult.context.state,
-            ...(this.lastResult.context.completionDisposition !== undefined
+            investigationId: String(result.context.investigationId),
+            investigationState: result.context.state,
+            ...(result.context.completionDisposition !== undefined
               ? {
-                  completionDisposition: this.lastResult.context.completionDisposition,
+                  completionDisposition: result.context.completionDisposition,
                 }
               : {}),
           }
@@ -135,22 +167,41 @@ export class ExtensionRuntime {
     });
   }
 
-  getPresentationView(): ExtensionPresentationViewPayload | undefined {
-    const lastResult = this.lastResult;
+  async getPresentationView(): Promise<ExtensionPresentationViewPayload | undefined> {
+    const tab = await getActiveTab();
+    if (tab === undefined) {
+      return undefined;
+    }
+
+    const tabState = this.investigations.get(tab.tabId);
+    const lastResult = tabState?.result;
     const view = lastResult?.view;
-    if (view === undefined || lastResult === undefined) {
+    if (tabState === undefined || view === undefined || lastResult === undefined) {
       return undefined;
     }
 
     return projectPresentationForPopup(
       view,
       lastResult.context.completionDisposition,
+      tabState.metadata,
+      tabState.disabledSignals,
     );
+  }
+
+  removeInvestigationForTab(tabId: number): void {
+    this.investigations.delete(tabId);
+    if (this.activeRuntimeTabId === tabId) {
+      this.systemRuntime?.shutdown();
+      this.systemRuntime = undefined;
+      this.activeRuntimeTabId = undefined;
+    }
   }
 
   shutdown(): void {
     this.systemRuntime?.shutdown();
     this.systemRuntime = undefined;
+    this.activeRuntimeTabId = undefined;
+    this.investigations.clear();
     this.initialized = false;
   }
 
@@ -163,7 +214,7 @@ export class ExtensionRuntime {
     if (
       this.systemRuntime !== undefined &&
       this.systemRuntime.getStatus() === "ready" &&
-      this.activeTabUrl === tab.url
+      this.activeRuntimeTabId === tab.tabId
     ) {
       return;
     }
@@ -173,10 +224,11 @@ export class ExtensionRuntime {
     this.systemRuntime.startup({
       browser: createChromeBrowserPorts({ tabId: tab.tabId, tabUrl: tab.url }),
       dom: createChromeDomPorts(tab.tabId),
+      factSource: createChromeFactSource(tab.tabId),
       configurationElection: "deferred",
       enableTraceability: true,
     });
-    this.activeTabUrl = tab.url;
+    this.activeRuntimeTabId = tab.tabId;
   }
 
   private requireSystemRuntime(): SystemRuntime {

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "build": "tsc -p tsconfig.build.json && bash extension/tooling/copy-popup-assets.sh",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && tsc -p extension/content/tsconfig.json && bash extension/tooling/package-extension.sh",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

@@ -7,12 +7,15 @@ import type { CompletionDisposition } from "../../src/investigation/states.js";
 import type { PresentationReadyView } from "../../src/presentation/index.js";
 import { PresentationSectionId } from "../../src/presentation/sections.js";
 import type { ViewFindingItem } from "../../src/presentation/view-sections.js";
+import {
+  projectPopupStoreInformation,
+  type PopupStoreInformation,
+} from "../adapters/store-metadata-projection.js";
+import { resolveDisabledIntegrationReason } from "../adapters/disabled-signal-projection.js";
+import type { StorefrontDisabledSignals } from "../adapters/storefront-observation.js";
+import type { StorefrontMetadataSnapshot } from "../adapters/store-metadata.js";
 
-export interface PopupStoreInfo {
-  readonly storeUrl?: string;
-  readonly theme?: string;
-  readonly pageType?: string;
-}
+export type PopupStoreInfo = PopupStoreInformation;
 
 export interface PopupProductStatus {
   readonly productLabel: string;
@@ -121,40 +124,58 @@ function findProductFinding(
   return section.findings.find((finding) => finding.subjectLabel.includes(productId));
 }
 
+function findDisabledFinding(
+  view: PresentationReadyView,
+  productId: string,
+): ViewFindingItem | undefined {
+  const section = view.viewSections.find(
+    (item) => item.sectionId === PresentationSectionId.PS004_DisabledIntegrations,
+  );
+  if (section === undefined || section.sectionId !== PresentationSectionId.PS004_DisabledIntegrations) {
+    return undefined;
+  }
+
+  return section.findings.find((finding) => finding.subjectLabel.includes(productId));
+}
+
 export function projectPresentationForPopup(
   view: PresentationReadyView,
   completionDisposition?: CompletionDisposition,
+  storeMetadata?: StorefrontMetadataSnapshot,
+  disabledSignals?: StorefrontDisabledSignals,
 ): PopupPresentationPayload {
-  const storeSection = view.viewSections.find(
-    (item) => item.sectionId === PresentationSectionId.PS002_StoreInformation,
-  );
   const statusSection = view.viewSections.find(
     (item) => item.sectionId === PresentationSectionId.PS009_InvestigationStatus,
   );
 
-  const store: PopupStoreInfo = Object.freeze({
-    ...(storeSection !== undefined &&
-    storeSection.sectionId === PresentationSectionId.PS002_StoreInformation
-      ? {
-          ...(storeSection.storeUrlLabel !== "Unavailable"
-            ? { storeUrl: storeSection.storeUrlLabel }
-            : {}),
-          ...(storeSection.themeNameLabel !== "Unavailable"
-            ? { theme: storeSection.themeNameLabel }
-            : {}),
-        }
-      : {}),
-    ...(view.report.storeInformation.currentPage !== undefined
-      ? { pageType: view.report.storeInformation.currentPage }
-      : {}),
+  const store = projectPopupStoreInformation({
+    reportStore: view.report.storeInformation,
+    ...(storeMetadata !== undefined ? { metadata: storeMetadata } : {}),
   });
 
   const products = Object.freeze(
     PRODUCT_CATALOG.map(({ productId, label }) => {
-      const finding = findProductFinding(view, productId);
-      const status = finding?.outcomeLabel ?? "Unknown";
-      const explanation =
-        finding !== undefined ? resolveExplanation(finding, view) : undefined;
+      const presenceFinding = findProductFinding(view, productId);
+      const disabledFinding = findDisabledFinding(view, productId);
+      const detected = presenceFinding?.outcomeLabel === "Detected";
+      const disabled = !detected && disabledFinding?.outcomeLabel === "Disabled";
+      const status = detected
+        ? "Detected"
+        : disabled
+          ? "Disabled"
+          : (presenceFinding?.outcomeLabel ?? "Unknown");
+      const explanation = detected
+        ? presenceFinding !== undefined
+          ? resolveExplanation(presenceFinding, view)
+          : undefined
+        : disabled
+          ? (resolveDisabledIntegrationReason(productId, disabledSignals) ??
+            (disabledFinding !== undefined
+              ? resolveExplanation(disabledFinding, view)
+              : undefined))
+          : presenceFinding !== undefined
+            ? resolveExplanation(presenceFinding, view)
+            : undefined;
 
       return Object.freeze({
         productLabel: label,
