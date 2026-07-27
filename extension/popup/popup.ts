@@ -9,6 +9,12 @@ import type {
   ExtensionPresentationViewPayload,
   ExtensionRuntimeStatusPayload,
 } from "../runtime/extension-runtime.js";
+import {
+  deriveHeaderStatus,
+  parseExtensionResponse,
+  productStatusClass,
+  statusClassName,
+} from "./popup-view-model.js";
 
 const ExtensionCommand = {
   START_INVESTIGATION: "START_INVESTIGATION",
@@ -16,93 +22,19 @@ const ExtensionCommand = {
   GET_PRESENTATION_VIEW: "GET_PRESENTATION_VIEW",
 } as const;
 
-type HeaderStatus = "Ready" | "Running" | "Completed" | "Partial";
-
-type CommandResult<T> =
-  | { readonly ok: true; readonly payload: T }
-  | { readonly ok: false; readonly error: string };
-
-interface SuccessResponse<T> {
-  readonly ok: true;
-  readonly command: string;
-  readonly payload: T;
-}
-
-interface ErrorResponse {
-  readonly ok: false;
-  readonly error: string;
-}
-
-type ExtensionResponse<T> = SuccessResponse<T> | ErrorResponse;
-
-function isExtensionResponse<T>(value: unknown): value is ExtensionResponse<T> {
-  return value !== null && typeof value === "object" && "ok" in (value as ExtensionResponse<T>);
-}
-
-async function sendCommand<T>(command: string): Promise<CommandResult<T>> {
+async function sendCommand<T>(command: string): Promise<
+  { readonly ok: true; readonly payload: T } | { readonly ok: false; readonly error: string }
+> {
   return new Promise((resolve) => {
     chrome.runtime.sendMessage({ command }, (response: unknown) => {
-      if (chrome.runtime.lastError !== undefined) {
-        resolve({
-          ok: false,
-          error: chrome.runtime.lastError.message ?? "Extension message failed",
-        });
-        return;
-      }
-
-      if (!isExtensionResponse<T>(response)) {
-        resolve({ ok: false, error: "Invalid extension response" });
-        return;
-      }
-
-      if (response.ok) {
-        resolve({ ok: true, payload: response.payload });
-        return;
-      }
-
-      resolve({ ok: false, error: response.error });
+      resolve(
+        parseExtensionResponse<T>(
+          response,
+          chrome.runtime.lastError?.message,
+        ),
+      );
     });
   });
-}
-
-function deriveHeaderStatus(status: ExtensionRuntimeStatusPayload): HeaderStatus {
-  if (status.investigationState === "InProgress") {
-    return "Running";
-  }
-  if (status.investigationState === "Completed") {
-    return "Completed";
-  }
-  if (
-    status.investigationState === "CompletedPartial" ||
-    status.completionDisposition === "UnknownQualified"
-  ) {
-    return "Partial";
-  }
-  return "Ready";
-}
-
-function statusClassName(status: HeaderStatus): string {
-  switch (status) {
-    case "Running":
-      return "status-indicator--running";
-    case "Completed":
-      return "status-indicator--completed";
-    case "Partial":
-      return "status-indicator--partial";
-    default:
-      return "status-indicator--ready";
-  }
-}
-
-function productStatusClass(status: string): string {
-  const normalized = status.toLowerCase();
-  if (normalized === "detected") {
-    return "product-item__status--detected";
-  }
-  if (normalized === "not detected") {
-    return "product-item__status--not-detected";
-  }
-  return "product-item__status--unknown";
 }
 
 function setText(id: string, value: string | undefined, fallback = "—"): void {
