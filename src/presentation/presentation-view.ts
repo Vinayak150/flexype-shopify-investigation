@@ -46,6 +46,7 @@ export function createPresentationReadyView(input: {
 
 /**
  * Structural honesty: view carries Report content only — no alternate outcome fields.
+ * Theme/StoreInformation are projected via PS-002 labels; other subjects via findings.
  */
 export function viewAgreesWithReport(view: PresentationReadyView): boolean {
   if (
@@ -56,10 +57,10 @@ export function viewAgreesWithReport(view: PresentationReadyView): boolean {
     return false;
   }
 
-  const reportOutcomes = view.report.detectionResultSet.results.map(
-    (result) => result.outcome,
+  const hasStoreInformationSection = view.viewSections.some(
+    (section) => section.sectionId === "PS-002",
   );
-  const viewOutcomes = view.viewSections.flatMap((section) => {
+  const findingOutcomes = view.viewSections.flatMap((section) => {
     if (
       section.sectionId === "PS-003" ||
       section.sectionId === "PS-004" ||
@@ -71,7 +72,15 @@ export function viewAgreesWithReport(view: PresentationReadyView): boolean {
     return [];
   });
 
-  return reportOutcomes.every((outcome) => viewOutcomes.includes(outcome));
+  return view.report.detectionResultSet.results.every((result) => {
+    if (
+      result.subject.kind === "Theme" ||
+      result.subject.kind === "StoreInformation"
+    ) {
+      return hasStoreInformationSection;
+    }
+    return findingOutcomes.includes(result.outcome);
+  });
 }
 
 export function assertPresentationViewImmutable(view: PresentationReadyView): boolean {
