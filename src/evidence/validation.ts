@@ -22,13 +22,18 @@ export function validateNormalizedEvidence(
         `Invalid EvidenceSignalClass: ${String(item.signalClass)}`,
       );
     }
+    if (item.provenance === undefined) {
+      return createEvidenceContractError(
+        EvidenceContractErrorCode.InvalidSignalClass,
+        "EvidenceItem requires provenance for explainability basis",
+      );
+    }
   }
   return undefined;
 }
 
 /**
  * Structural immutability posture check for Normalized Evidence (ADR-002).
- * Confirms frozen object graph for consumer handoff.
  */
 export function assertNormalizedEvidenceImmutable(
   evidence: NormalizedEvidence,
@@ -38,6 +43,23 @@ export function assertNormalizedEvidenceImmutable(
       EvidenceContractErrorCode.MutableNormalizedEvidence,
       "NormalizedEvidence must be frozen/immutable for consumers",
     );
+  }
+  if (
+    evidence.unobtainableSignalClasses !== undefined &&
+    !Object.isFrozen(evidence.unobtainableSignalClasses)
+  ) {
+    return createEvidenceContractError(
+      EvidenceContractErrorCode.MutableNormalizedEvidence,
+      "NormalizedEvidence.unobtainableSignalClasses must be frozen",
+    );
+  }
+  for (const item of evidence.items) {
+    if (!Object.isFrozen(item) || !Object.isFrozen(item.provenance)) {
+      return createEvidenceContractError(
+        EvidenceContractErrorCode.MutableNormalizedEvidence,
+        "EvidenceItem and provenance must be frozen",
+      );
+    }
   }
   return undefined;
 }

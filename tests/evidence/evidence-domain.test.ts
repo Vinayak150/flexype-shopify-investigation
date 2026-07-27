@@ -5,6 +5,7 @@ import {
   assertNormalizedEvidenceImmutable,
   createEvidenceItem,
   createEvidenceItemId,
+  createEvidenceProvenance,
   createNormalizedEvidence,
   EvidenceSignalClass,
   validateNormalizedEvidence,
@@ -19,11 +20,18 @@ describe("P-003 Evidence domain contracts", () => {
       investigationId,
       signalClass: EvidenceSignalClass.ScriptUrls,
       observationSummary: "public script url observed",
+      provenance: createEvidenceProvenance({
+        investigationId,
+        storefrontUrl: "https://shop.example",
+        sourceRef: "test.source",
+        collectionOrdinal: 1,
+      }),
     });
 
     expect(item.evidenceItemId).toBe(evidenceItemId);
     expect(item.investigationId).toBe(investigationId);
     expect(item.signalClass).toBe("ScriptUrls");
+    expect(item.provenance.sourceRef).toBe("test.source");
   });
 
   it("NormalizedEvidence is immutable for consumers (ADR-002)", () => {
@@ -36,6 +44,12 @@ describe("P-003 Evidence domain contracts", () => {
           investigationId,
           signalClass: EvidenceSignalClass.DomElements,
           observationSummary: "dom structure observed",
+          provenance: createEvidenceProvenance({
+            investigationId,
+            storefrontUrl: "https://shop.example",
+            sourceRef: "test.dom",
+            collectionOrdinal: 1,
+          }),
         }),
       ],
     });
@@ -50,6 +64,12 @@ describe("P-003 Evidence domain contracts", () => {
           investigationId,
           signalClass: EvidenceSignalClass.NetworkRequests,
           observationSummary: "should fail",
+          provenance: createEvidenceProvenance({
+            investigationId,
+            storefrontUrl: "https://shop.example",
+            sourceRef: "test.x",
+            collectionOrdinal: 2,
+          }),
         }),
       );
     }).toThrow();
@@ -67,8 +87,15 @@ describe("P-003 Evidence domain contracts", () => {
           investigationId,
           signalClass: "InventedAppCatalog" as never,
           observationSummary: "invalid",
+          provenance: createEvidenceProvenance({
+            investigationId,
+            storefrontUrl: "https://shop.example",
+            sourceRef: "test.invalid",
+            collectionOrdinal: 1,
+          }),
         },
       ],
+      unobtainableSignalClasses: [],
     };
 
     expect(validateNormalizedEvidence(invalid)?.code).toBe("InvalidSignalClass");
