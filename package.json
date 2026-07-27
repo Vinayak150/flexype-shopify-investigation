@@ -2,15 +2,16 @@
   "name": "flexype-shopify-investigator",
   "version": "0.1.0",
   "private": true,
-  "description": "FlexyPe Shopify Investigation Engine",
+  "description": "FlexyPe Shopify Store Diagnostics Chrome Extension — repository bootstrap (E-001)",
   "type": "module",
-  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsx src/index.ts",
-    "test": "vitest",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "build": "tsc -p tsconfig.build.json",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [
     "shopify",
@@ -21,12 +22,13 @@
   "author": "Vinayak Mahindrakar",
   "license": "MIT",
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^26.1.1",
-    "eslint": "^10.8.0",
-    "prettier": "^3.9.6",
-    "tsx": "^4.23.1",
-    "typescript": "^7.0.2",
-    "vitest": "^4.1.10"
+    "@eslint/js": "^9.22.0",
+    "@types/node": "^22.13.10",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.1",
+    "vitest": "^3.0.8"
   }
 }
