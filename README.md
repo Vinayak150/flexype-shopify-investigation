@@ -83,11 +83,14 @@ Reporting
 Presentation
 ```
 
-Optional adjuncts (non-blocking):
+Supporting packages (optional / non-blocking):
+
+- P-007 Configuration
+- P-008 Traceability
 
 ```
-Configuration  ----->  Reporting  (optional IO-010 adjunct only)
-Traceability   ----->  lineage / obligation / explainability records
+P-007 Configuration  ----->  Reporting  (optional IO-010 adjunct only)
+P-008 Traceability   ----->  lineage / obligation / explainability records
 ```
 
 **Hosting vs ownership**
@@ -97,7 +100,7 @@ Traceability   ----->  lineage / obligation / explainability records
 | `extension/` | Composition root (E-011). Wires package engines and ports. Does not own Detection, Evidence, or Report semantics. |
 | `src/<package>/` | Package ownership regions (P-001–P-008). Domain meaning lives here. |
 
-Dependency direction is fixed: Investigation → Observation → Evidence → Detection → Reporting → Presentation. Configuration attaches to Reporting only. Traceability records relationships; it does not execute or gate the core path.
+Dependency direction is fixed: Investigation → Observation → Evidence → Detection → Reporting → Presentation. P-007 Configuration attaches to Reporting only. P-008 Traceability records relationships; it does not execute or gate the core path.
 
 ---
 
@@ -116,6 +119,8 @@ Dependency direction is fixed: Investigation → Observation → Evidence → De
 
 Each package owns a single responsibility. Presentation does not evaluate Evidence. Reporting does not recollect Evidence. Detection does not observe the browser directly for evaluation.
 
+Supporting packages: P-007 Configuration (optional) and P-008 Traceability (non-blocking).
+
 ---
 
 ## Engineering Highlights
@@ -128,8 +133,8 @@ Each package owns a single responsibility. Presentation does not evaluate Eviden
 | Single acquisition boundary | Observation and Evidence run once per Investigation; later stages consume the frozen snapshot (ADR-005). |
 | Honest partial / Unknown outcomes | Not Detected and Unknown are valid; Completion Disposition reflects incompleteness (ADR-006). |
 | Framework-independent Presentation | Presentation-ready Views are structural projections of the Diagnostic Report—not UI business logic. |
-| Optional Configuration | Product Configuration (IO-010) may enrich Reporting; core path succeeds without it (FR-026). |
-| Non-blocking Traceability | Lineage and obligation recording never gates Investigation completion. |
+| Optional Configuration (P-007) | Product Configuration (IO-010) may enrich Reporting; core path succeeds without it (FR-026). |
+| Non-blocking Traceability (P-008) | Lineage and obligation recording never gates Investigation completion. |
 | Package boundaries | Strict ownership under `src/<package>/`; composition stays in `extension/`. |
 
 Closed FlexyPe product catalog: **Checkout**, **FlexyPass**, **FlexyCart** (C-011).
@@ -184,6 +189,17 @@ tests/                 # Unit, integration, e2e, and release verification
 tooling/               # Architecture freeze and release structure guards
 dist/                  # Generated build output (not authoritative)
 ```
+
+---
+
+## Technology Stack
+
+- TypeScript
+- Node.js 22+
+- Vitest
+- ESLint
+- Prettier
+- Chrome Extension APIs (hosting layer)
 
 ---
 
@@ -252,8 +268,8 @@ Canonical entity meanings remain in `architecture/04_DOMAIN_MODEL.md`.
 ## Design Constraints
 
 - **Architecture and ADR documents are frozen.** Changes require a new ADR, not convenience edits.
-- **Configuration is optional.** Default runtime election is `deferred` (`NotInScope`). Core Investigation never requires Configuration.
-- **Traceability is non-blocking.** Recording failures do not fail the diagnostic pipeline.
+- **P-007 Configuration is optional.** Default runtime election is `deferred` (`NotInScope`). Core Investigation never requires Configuration.
+- **P-008 Traceability is non-blocking.** Recording failures do not fail the diagnostic pipeline.
 - **Unknowns remain explicitly Open.** Domain Unknowns `U-001`–`U-010` are not closed by invention (EP-003).
 - **`dist/` is generated output.** It is regenerable and not the design authority.
 - **Browser-local core.** Parts 1–3 diagnostics do not require a backend Configuration Runtime for core success.
