@@ -1,22 +1,22 @@
 import { describe, expect, it } from "vitest";
 
-import { createInvestigationId } from "../../src/investigation/index.js";
 import {
+  createInvestigationId,
+  createStorefrontTarget,
+} from "../../src/investigation/index.js";
+import {
+  createAgendaItemId,
   createDetectionResult,
   createDetectionResultId,
-  createDetectionResultSet,
-  createAgendaItemId,
-  createStoreInformation,
   DetectionOutcome,
   FlexyPeProductId,
-  ThemeAvailability,
 } from "../../src/detection/index.js";
-import { createDiagnosticReport } from "../../src/reporting/index.js";
 import {
   createPresentationReadyView,
   PresentationSectionId,
   viewAgreesWithReport,
 } from "../../src/presentation/index.js";
+import { buildMinimalReport } from "../reporting/report-fixtures.js";
 
 describe("P-006 Presentation domain contracts", () => {
   it("Presentation-ready View references Report Detection outcomes without alternate fields", () => {
@@ -31,16 +31,10 @@ describe("P-006 Presentation domain contracts", () => {
       },
       outcome: DetectionOutcome.NotDetected,
     });
-    const report = createDiagnosticReport({
+    const report = buildMinimalReport({
       investigationId,
-      storeInformation: createStoreInformation({
-        investigationId,
-        themeAvailability: ThemeAvailability.Unavailable,
-      }),
-      detectionResultSet: createDetectionResultSet({
-        investigationId,
-        results: [result],
-      }),
+      storefrontTarget: createStorefrontTarget("https://shop.example"),
+      results: [result],
     });
 
     const view = createPresentationReadyView({
