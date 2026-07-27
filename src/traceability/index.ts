@@ -1,6 +1,8 @@
 /**
- * P-008 Traceability — governance placeholder (E-001 bootstrap).
- * Non-blocking; no runtime diagnostic logic in this milestone.
+ * P-008 Traceability — domain contracts (E-002).
+ * Non-blocking governance vocabulary; no runtime diagnostic logic.
  */
 export const PACKAGE_ID = "P-008" as const;
 export const PACKAGE_NAME = "traceability" as const;
+
+export * from "./obligation.js";
