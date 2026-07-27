@@ -19,3 +19,20 @@ export type PresentationSectionId =
 
 export const PRESENTATION_SECTION_IDS: readonly PresentationSectionId[] =
   Object.values(PresentationSectionId);
+
+/**
+ * Core-before-optional reading order (UI Architecture).
+ * PS-008 Unknowns remain visible before optional PS-007 Configuration.
+ */
+export const CORE_BEFORE_OPTIONAL_SECTION_ORDER: readonly PresentationSectionId[] =
+  Object.freeze([
+    PresentationSectionId.PS001_InvestigationSummary,
+    PresentationSectionId.PS002_StoreInformation,
+    PresentationSectionId.PS003_FlexyPeProducts,
+    PresentationSectionId.PS004_DisabledIntegrations,
+    PresentationSectionId.PS005_ThirdPartyApps,
+    PresentationSectionId.PS006_StorefrontFeatures,
+    PresentationSectionId.PS008_UnknownQualifications,
+    PresentationSectionId.PS007_OptionalProductConfiguration,
+    PresentationSectionId.PS009_InvestigationStatus,
+  ]);

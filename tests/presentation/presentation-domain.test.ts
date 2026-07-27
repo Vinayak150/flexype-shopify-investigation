@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  createInvestigationContext,
   createInvestigationId,
   createStorefrontTarget,
+  InvestigationState,
 } from "../../src/investigation/index.js";
 import {
   createAgendaItemId,
@@ -12,8 +14,8 @@ import {
   FlexyPeProductId,
 } from "../../src/detection/index.js";
 import {
-  createPresentationReadyView,
-  PresentationSectionId,
+  CORE_BEFORE_OPTIONAL_SECTION_ORDER,
+  PresentationEngine,
   viewAgreesWithReport,
 } from "../../src/presentation/index.js";
 import { buildMinimalReport } from "../reporting/report-fixtures.js";
@@ -21,6 +23,11 @@ import { buildMinimalReport } from "../reporting/report-fixtures.js";
 describe("P-006 Presentation domain contracts", () => {
   it("Presentation-ready View references Report Detection outcomes without alternate fields", () => {
     const investigationId = createInvestigationId("inv-pres-1");
+    const context = createInvestigationContext({
+      investigationId,
+      storefrontTarget: createStorefrontTarget("https://shop.example"),
+      state: InvestigationState.InProgress,
+    });
     const result = createDetectionResult({
       detectionResultId: createDetectionResultId("dr-p1"),
       investigationId,
@@ -33,20 +40,14 @@ describe("P-006 Presentation domain contracts", () => {
     });
     const report = buildMinimalReport({
       investigationId,
-      storefrontTarget: createStorefrontTarget("https://shop.example"),
+      storefrontTarget: context.storefrontTarget,
       results: [result],
     });
 
-    const view = createPresentationReadyView({
-      report,
-      sectionOrder: [
-        PresentationSectionId.PS001_InvestigationSummary,
-        PresentationSectionId.PS002_StoreInformation,
-        PresentationSectionId.PS003_FlexyPeProducts,
-      ],
-    });
+    const view = new PresentationEngine().present(context, report);
 
     expect(view.report.detectionResultSet.results[0]?.outcome).toBe("NotDetected");
+    expect(view.sectionOrder).toEqual([...CORE_BEFORE_OPTIONAL_SECTION_ORDER]);
     expect(viewAgreesWithReport(view)).toBe(true);
     expect(Object.isFrozen(view)).toBe(true);
   });
