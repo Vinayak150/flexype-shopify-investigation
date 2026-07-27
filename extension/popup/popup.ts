@@ -22,17 +22,15 @@ const ExtensionCommand = {
   GET_PRESENTATION_VIEW: "GET_PRESENTATION_VIEW",
 } as const;
 
-async function sendCommand<T>(command: string): Promise<
-  { readonly ok: true; readonly payload: T } | { readonly ok: false; readonly error: string }
+async function sendCommand<T>(
+  command: string,
+): Promise<
+  | { readonly ok: true; readonly payload: T }
+  | { readonly ok: false; readonly error: string }
 > {
   return new Promise((resolve) => {
     chrome.runtime.sendMessage({ command }, (response: unknown) => {
-      resolve(
-        parseExtensionResponse<T>(
-          response,
-          chrome.runtime.lastError?.message,
-        ),
-      );
+      resolve(parseExtensionResponse<T>(response, chrome.runtime.lastError?.message));
     });
   });
 }

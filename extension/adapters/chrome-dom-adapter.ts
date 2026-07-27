@@ -32,7 +32,10 @@ import {
   mergeShopifyPageSources,
 } from "./shopify-page-context.js";
 
-export { STOREFRONT_PROBE_MESSAGE, STOREFRONT_READY_MESSAGE } from "./storefront-observation.js";
+export {
+  STOREFRONT_PROBE_MESSAGE,
+  STOREFRONT_READY_MESSAGE,
+} from "./storefront-observation.js";
 export type { StorefrontObservationSnapshot } from "./storefront-observation.js";
 export {
   DEFAULT_OBSERVATION_MAX_ATTEMPTS,

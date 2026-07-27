@@ -117,7 +117,10 @@ function findProductFinding(
   const section = view.viewSections.find(
     (item) => item.sectionId === PresentationSectionId.PS003_FlexyPeProducts,
   );
-  if (section === undefined || section.sectionId !== PresentationSectionId.PS003_FlexyPeProducts) {
+  if (
+    section === undefined ||
+    section.sectionId !== PresentationSectionId.PS003_FlexyPeProducts
+  ) {
     return undefined;
   }
 
@@ -131,7 +134,10 @@ function findDisabledFinding(
   const section = view.viewSections.find(
     (item) => item.sectionId === PresentationSectionId.PS004_DisabledIntegrations,
   );
-  if (section === undefined || section.sectionId !== PresentationSectionId.PS004_DisabledIntegrations) {
+  if (
+    section === undefined ||
+    section.sectionId !== PresentationSectionId.PS004_DisabledIntegrations
+  ) {
     return undefined;
   }
 

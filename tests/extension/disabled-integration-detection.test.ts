@@ -148,8 +148,10 @@ describe("disabled integration detection flow", () => {
       (result) => result.subject.kind === "DisabledIntegration",
     );
 
-    expect(disabledResults.every((result) => result.outcome === DetectionOutcome.NotDetected)).toBe(
-      true,
-    );
+    expect(
+      disabledResults.every(
+        (result) => result.outcome === DetectionOutcome.NotDetected,
+      ),
+    ).toBe(true);
   });
 });

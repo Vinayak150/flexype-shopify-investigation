@@ -13,7 +13,9 @@ export interface ObservationRetryOptions {
   readonly maxAttempts?: number;
   readonly delayMs?: number;
   readonly sleep?: (delayMs: number) => Promise<void>;
-  readonly probe?: (tabId: number) => Promise<StorefrontObservationSnapshot | undefined>;
+  readonly probe?: (
+    tabId: number,
+  ) => Promise<StorefrontObservationSnapshot | undefined>;
 }
 
 export interface StorefrontReadyWaitOptions {

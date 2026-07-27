@@ -185,7 +185,9 @@ describe("shopify page context extraction", () => {
   });
 
   it("does not use inline script injection in the storefront content script", () => {
-    expect(storefrontAgentSource).not.toContain("collectShopifyPageSourcesFromPageContext");
+    expect(storefrontAgentSource).not.toContain(
+      "collectShopifyPageSourcesFromPageContext",
+    );
     expect(storefrontAgentSource).not.toContain("data-flexype-shopify-globals");
     expect(storefrontAgentSource).not.toMatch(
       /createElement\(\s*["']script["']\s*\)[\s\S]*textContent/,

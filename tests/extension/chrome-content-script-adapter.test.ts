@@ -48,10 +48,7 @@ describe("ensureStorefrontAgent", () => {
   });
 
   it("injects the storefront agent when it is missing", async () => {
-    const isPresent = vi
-      .fn()
-      .mockResolvedValueOnce(false)
-      .mockResolvedValueOnce(true);
+    const isPresent = vi.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true);
     const inject = vi.fn(async () => undefined);
     const waitReady = vi.fn(async () => true);
 
@@ -71,7 +68,9 @@ describe("ensureStorefrontAgent", () => {
 
     await expect(
       ensureStorefrontAgent(7, { isPresent, inject, waitReady }),
-    ).rejects.toThrow("Unable to inject storefront observation agent: Cannot access contents of url");
+    ).rejects.toThrow(
+      "Unable to inject storefront observation agent: Cannot access contents of url",
+    );
     expect(waitReady).not.toHaveBeenCalled();
   });
 
@@ -100,13 +99,12 @@ describe("ensureStorefrontAgent", () => {
 
 describe("injectStorefrontAgent", () => {
   it("targets the packaged storefront agent script", async () => {
-    const executeScript = vi.fn((_injection, callback: (results: unknown[]) => void) => {
-      callback([]);
-    });
-    vi.stubGlobal(
-      "chrome",
-      createChromeContentScriptTestMock(executeScript),
+    const executeScript = vi.fn(
+      (_injection, callback: (results: unknown[]) => void) => {
+        callback([]);
+      },
     );
+    vi.stubGlobal("chrome", createChromeContentScriptTestMock(executeScript));
 
     await injectStorefrontAgent(3);
 

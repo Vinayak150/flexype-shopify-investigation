@@ -95,7 +95,9 @@ describe("probeStorefrontObservationWithRetry", () => {
       domIndicators: Object.freeze([]),
     });
     const populatedSnapshot = createSnapshot({
-      scriptUrls: Object.freeze(["https://static.flexype.in/scripts/flexype-v2.min.js"]),
+      scriptUrls: Object.freeze([
+        "https://static.flexype.in/scripts/flexype-v2.min.js",
+      ]),
     });
     const probe = vi
       .fn()
@@ -156,10 +158,7 @@ describe("waitForStorefrontObservationReady", () => {
 
   it("returns true once the content script reports readiness", async () => {
     const sleep = vi.fn(async () => undefined);
-    const pingReady = vi
-      .fn()
-      .mockResolvedValueOnce(false)
-      .mockResolvedValueOnce(true);
+    const pingReady = vi.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true);
 
     const ready = await waitForStorefrontObservationReady(9, {
       maxAttempts: 3,

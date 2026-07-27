@@ -5,7 +5,10 @@ import {
   createMemoryDomPorts,
 } from "../../src/observation/index.js";
 import { StorefrontPageType } from "../../extension/adapters/store-metadata.js";
-import { EMPTY_DISABLED_SIGNALS, EMPTY_SHOPIFY_PAGE_SOURCES } from "../../extension/adapters/storefront-observation.js";
+import {
+  EMPTY_DISABLED_SIGNALS,
+  EMPTY_SHOPIFY_PAGE_SOURCES,
+} from "../../extension/adapters/storefront-observation.js";
 import { ExtensionRuntime } from "../../extension/runtime/extension-runtime.js";
 
 const getActiveTab = vi.fn();
@@ -197,7 +200,9 @@ describe("extension runtime", () => {
       url: "https://store.example/",
     });
     ensureStorefrontAgent.mockRejectedValue(
-      new Error("Unable to inject storefront observation agent: Cannot access contents of url"),
+      new Error(
+        "Unable to inject storefront observation agent: Cannot access contents of url",
+      ),
     );
 
     const runtime = new ExtensionRuntime();

@@ -101,10 +101,7 @@ function getHiddenConcealment(element: HTMLElement) {
 function toDisabledElementIndicator(
   element: HTMLElement,
   concealment:
-    | "display-none"
-    | "hidden-attribute"
-    | "aria-hidden"
-    | "disabled-attribute",
+    "display-none" | "hidden-attribute" | "aria-hidden" | "disabled-attribute",
 ) {
   const dataAttributes = [];
   for (const attribute of Array.from(element.attributes)) {
@@ -167,7 +164,11 @@ function collectDisabledSignals() {
         break;
       }
       const trimmed = line.trim();
-      if (/^\s*\/\//.test(trimmed) && isFlexyRelatedText(trimmed) && !commentedScripts.includes(trimmed)) {
+      if (
+        /^\s*\/\//.test(trimmed) &&
+        isFlexyRelatedText(trimmed) &&
+        !commentedScripts.includes(trimmed)
+      ) {
         commentedScripts.push(trimmed.slice(0, 500));
       }
     }
@@ -195,7 +196,10 @@ function collectDisabledSignals() {
       }
 
       const concealment = getHiddenConcealment(element);
-      if (concealment !== undefined && hiddenFlexyElements.length < MAX_DISABLED_SNIPPETS) {
+      if (
+        concealment !== undefined &&
+        hiddenFlexyElements.length < MAX_DISABLED_SNIPPETS
+      ) {
         hiddenFlexyElements.push(toDisabledElementIndicator(element, concealment));
         excludedDomKeys.add(key);
       }
@@ -269,7 +273,10 @@ function collectGlobalObjects() {
   const present = [];
   const globalRecord = window as unknown as Record<string, unknown>;
   for (const name of GLOBAL_CANDIDATES) {
-    if (Object.prototype.hasOwnProperty.call(globalRecord, name) && globalRecord[name] !== undefined) {
+    if (
+      Object.prototype.hasOwnProperty.call(globalRecord, name) &&
+      globalRecord[name] !== undefined
+    ) {
       present.push(name);
     }
   }
@@ -281,7 +288,10 @@ function collectMetadata() {
   const canonicalElement = document.querySelector("link[rel='canonical']");
   const metaTags = [];
 
-  for (const meta of Array.from(document.querySelectorAll("meta")).slice(0, MAX_META_TAGS)) {
+  for (const meta of Array.from(document.querySelectorAll("meta")).slice(
+    0,
+    MAX_META_TAGS,
+  )) {
     const name = meta.getAttribute("name") ?? undefined;
     const property = meta.getAttribute("property") ?? undefined;
     const content = meta.getAttribute("content") ?? "";
@@ -310,7 +320,9 @@ function collectMetadata() {
 
 function collectThemeHints() {
   const hints = [];
-  for (const link of Array.from(document.querySelectorAll("link[rel='stylesheet'], link[rel='preload']"))) {
+  for (const link of Array.from(
+    document.querySelectorAll("link[rel='stylesheet'], link[rel='preload']"),
+  )) {
     if (!(link instanceof HTMLLinkElement) || !link.href) {
       continue;
     }
@@ -467,7 +479,8 @@ function collectStoreMetadata(input: {
   documentLang: string | undefined;
 }) {
   const storeUrl =
-    input.pageMetadata.canonicalUrl !== undefined && input.pageMetadata.canonicalUrl.length > 0
+    input.pageMetadata.canonicalUrl !== undefined &&
+    input.pageMetadata.canonicalUrl.length > 0
       ? input.pageMetadata.canonicalUrl
       : input.pageUrl;
   const shopName =
@@ -513,7 +526,8 @@ function buildObservationSnapshot() {
   const canTraverse = hasDocument && document.body !== null;
   const canQuery = hasDocument && typeof document.querySelector === "function";
   const metadataReachable =
-    hasDocument && document.querySelector("meta, title, link[rel='canonical']") !== null;
+    hasDocument &&
+    document.querySelector("meta, title, link[rel='canonical']") !== null;
   const disabledCollection = canQuery ? collectDisabledSignals() : undefined;
   const disabledSignals = disabledCollection
     ? Object.freeze({
@@ -566,25 +580,23 @@ const globalRecord = window as unknown as Record<string, unknown>;
 if (globalRecord.__flexypeStorefrontAgentInstalled !== true) {
   globalRecord.__flexypeStorefrontAgentInstalled = true;
 
-  chrome.runtime.onMessage.addListener(
-    (message: unknown, _sender, sendResponse) => {
-      if (message === null || typeof message !== "object" || !("kind" in message)) {
-        return false;
-      }
+  chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse) => {
+    if (message === null || typeof message !== "object" || !("kind" in message)) {
+      return false;
+    }
 
-      const kind = (message as { kind: unknown }).kind;
+    const kind = (message as { kind: unknown }).kind;
 
-      if (kind === STOREFRONT_READY_MESSAGE) {
-        sendResponse(buildReadyResponse());
-        return true;
-      }
-
-      if (kind !== STOREFRONT_PROBE_MESSAGE) {
-        return false;
-      }
-
-      sendResponse(buildObservationSnapshot());
+    if (kind === STOREFRONT_READY_MESSAGE) {
+      sendResponse(buildReadyResponse());
       return true;
-    },
-  );
+    }
+
+    if (kind !== STOREFRONT_PROBE_MESSAGE) {
+      return false;
+    }
+
+    sendResponse(buildObservationSnapshot());
+    return true;
+  });
 }

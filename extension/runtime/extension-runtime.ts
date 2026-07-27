@@ -109,26 +109,27 @@ export class ExtensionRuntime {
         label: "chrome-extension",
       });
     } catch (error) {
-      throw new Error(
-        error instanceof Error ? error.message : "Investigation failed",
-      );
+      throw new Error(error instanceof Error ? error.message : "Investigation failed");
     }
 
     if (result.view === undefined) {
       throw new Error("Investigation completed without presentation results");
     }
 
-    this.investigations.set(tab.tabId, Object.freeze({
-      url: tab.url,
-      result,
-      ...(observationSnapshot?.storeMetadata !== undefined
-        ? { metadata: observationSnapshot.storeMetadata }
-        : {}),
-      ...(observationSnapshot?.disabledSignals !== undefined
-        ? { disabledSignals: observationSnapshot.disabledSignals }
-        : {}),
-      updatedAt: Date.now(),
-    }));
+    this.investigations.set(
+      tab.tabId,
+      Object.freeze({
+        url: tab.url,
+        result,
+        ...(observationSnapshot?.storeMetadata !== undefined
+          ? { metadata: observationSnapshot.storeMetadata }
+          : {}),
+        ...(observationSnapshot?.disabledSignals !== undefined
+          ? { disabledSignals: observationSnapshot.disabledSignals }
+          : {}),
+        updatedAt: Date.now(),
+      }),
+    );
 
     return Object.freeze({
       investigationId: String(result.context.investigationId),
@@ -145,8 +146,7 @@ export class ExtensionRuntime {
     const tab = await getActiveTab();
     const runtime = this.systemRuntime;
     const ready = runtime?.getStatus() === "ready";
-    const tabState =
-      tab !== undefined ? this.investigations.get(tab.tabId) : undefined;
+    const tabState = tab !== undefined ? this.investigations.get(tab.tabId) : undefined;
     const result = tabState?.result;
 
     return Object.freeze({
@@ -232,7 +232,10 @@ export class ExtensionRuntime {
   }
 
   private requireSystemRuntime(): SystemRuntime {
-    if (this.systemRuntime === undefined || this.systemRuntime.getStatus() !== "ready") {
+    if (
+      this.systemRuntime === undefined ||
+      this.systemRuntime.getStatus() !== "ready"
+    ) {
       throw new Error("SystemRuntime is not ready");
     }
     return this.systemRuntime;

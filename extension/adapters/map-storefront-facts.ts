@@ -57,7 +57,10 @@ function appendMarkers(summary: string, markers: readonly string[]): string {
   return `${summary}; ${markers.join(" ")}`;
 }
 
-function markersAlreadyPresent(text: string, markers: readonly string[]): readonly string[] {
+function markersAlreadyPresent(
+  text: string,
+  markers: readonly string[],
+): readonly string[] {
   return markers.filter((marker) => text.includes(marker));
 }
 
@@ -117,7 +120,10 @@ function hasFlexyPassBranding(text: string): boolean {
 function inferMarkersFromText(text: string): readonly string[] {
   const found = new Set<string>();
 
-  for (const marker of markersAlreadyPresent(text, Object.values(PRODUCT_MARKERS).flat())) {
+  for (const marker of markersAlreadyPresent(
+    text,
+    Object.values(PRODUCT_MARKERS).flat(),
+  )) {
     found.add(marker);
   }
 
@@ -181,7 +187,9 @@ function inferGlobalObjectMarkers(globalName: string): readonly string[] {
   return inferMarkersFromText(globalName);
 }
 
-function domIndicatorText(indicator: StorefrontObservationSnapshot["domIndicators"][number]): string {
+function domIndicatorText(
+  indicator: StorefrontObservationSnapshot["domIndicators"][number],
+): string {
   return [
     indicator.tag,
     indicator.id ?? "",
@@ -194,7 +202,10 @@ function appendStoreMetadataFacts(
   facts: CollectableFact[],
   storeMetadata: StorefrontMetadataSnapshot,
 ): void {
-  if (storeMetadata.storeUrl !== undefined && storeMetadata.storeUrl.trim().length > 0) {
+  if (
+    storeMetadata.storeUrl !== undefined &&
+    storeMetadata.storeUrl.trim().length > 0
+  ) {
     facts.push({
       signalClass: EvidenceSignalClass.GlobalBrowserObjects,
       observationSummary: `store.url: ${storeMetadata.storeUrl.trim()}`,
@@ -202,7 +213,10 @@ function appendStoreMetadataFacts(
     });
   }
 
-  if (storeMetadata.shopName !== undefined && storeMetadata.shopName.trim().length > 0) {
+  if (
+    storeMetadata.shopName !== undefined &&
+    storeMetadata.shopName.trim().length > 0
+  ) {
     facts.push({
       signalClass: EvidenceSignalClass.ShopifyThemeAssets,
       observationSummary: `store.shopName: ${storeMetadata.shopName.trim()}`,
@@ -210,7 +224,10 @@ function appendStoreMetadataFacts(
     });
   }
 
-  if (storeMetadata.shopifyDomain !== undefined && storeMetadata.shopifyDomain.trim().length > 0) {
+  if (
+    storeMetadata.shopifyDomain !== undefined &&
+    storeMetadata.shopifyDomain.trim().length > 0
+  ) {
     facts.push({
       signalClass: EvidenceSignalClass.GlobalBrowserObjects,
       observationSummary: `store.shopifyDomain: ${storeMetadata.shopifyDomain.trim()}`,
@@ -218,7 +235,10 @@ function appendStoreMetadataFacts(
     });
   }
 
-  if (storeMetadata.baseCurrency !== undefined && storeMetadata.baseCurrency.trim().length > 0) {
+  if (
+    storeMetadata.baseCurrency !== undefined &&
+    storeMetadata.baseCurrency.trim().length > 0
+  ) {
     facts.push({
       signalClass: EvidenceSignalClass.GlobalBrowserObjects,
       observationSummary: `store.baseCurrency: ${storeMetadata.baseCurrency.trim()}`,
@@ -242,7 +262,10 @@ function appendStoreMetadataFacts(
     });
   }
 
-  if (storeMetadata.themeName !== undefined && storeMetadata.themeName.trim().length > 0) {
+  if (
+    storeMetadata.themeName !== undefined &&
+    storeMetadata.themeName.trim().length > 0
+  ) {
     facts.push({
       signalClass: EvidenceSignalClass.ShopifyThemeAssets,
       observationSummary: `store.themeName: ${storeMetadata.themeName.trim()}`,
@@ -274,7 +297,10 @@ export function mapStorefrontSnapshotToFacts(
     });
     facts.push({
       signalClass: EvidenceSignalClass.LoadedJavaScriptAssets,
-      observationSummary: appendMarkers(`loaded javascript asset: ${scriptUrl}`, markers),
+      observationSummary: appendMarkers(
+        `loaded javascript asset: ${scriptUrl}`,
+        markers,
+      ),
       sourceRef: `content.scripts.asset:${scriptUrl}`,
     });
   }
@@ -306,7 +332,10 @@ export function mapStorefrontSnapshotToFacts(
     const markers = inferGlobalObjectMarkers(globalName);
     facts.push({
       signalClass: EvidenceSignalClass.GlobalBrowserObjects,
-      observationSummary: appendMarkers(`global object present: ${globalName}`, markers),
+      observationSummary: appendMarkers(
+        `global object present: ${globalName}`,
+        markers,
+      ),
       sourceRef: `content.window.${globalName}`,
     });
   }
@@ -334,7 +363,10 @@ export function mapStorefrontSnapshotToFacts(
     });
   }
 
-  if (snapshot.metadata.canonicalUrl !== undefined && snapshot.metadata.canonicalUrl.length > 0) {
+  if (
+    snapshot.metadata.canonicalUrl !== undefined &&
+    snapshot.metadata.canonicalUrl.length > 0
+  ) {
     facts.push({
       signalClass: EvidenceSignalClass.GlobalBrowserObjects,
       observationSummary: `store.url: ${snapshot.metadata.canonicalUrl}`,
@@ -352,7 +384,9 @@ export function mapStorefrontSnapshotToFacts(
     });
   }
 
-  const themeNameHint = snapshot.themeHints.find((hint) => hint.startsWith("theme-name:"));
+  const themeNameHint = snapshot.themeHints.find((hint) =>
+    hint.startsWith("theme-name:"),
+  );
   if (themeNameHint !== undefined) {
     facts.push({
       signalClass: EvidenceSignalClass.ShopifyThemeAssets,

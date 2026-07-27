@@ -10,7 +10,10 @@ import { mapStorefrontSnapshotToFacts } from "./map-storefront-facts.js";
 
 export function createChromeFactSource(tabId: number): FactSourcePort {
   return Object.freeze({
-    async collectFacts(_context: InvestigationContext, affordance: ObservationAffordance) {
+    async collectFacts(
+      _context: InvestigationContext,
+      affordance: ObservationAffordance,
+    ) {
       if (!affordance.isPubliclyObservable) {
         return Object.freeze([]);
       }

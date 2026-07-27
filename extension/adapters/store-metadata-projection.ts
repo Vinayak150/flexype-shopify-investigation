@@ -85,9 +85,7 @@ export function projectPopupStoreInformation(input: {
         storeUrl,
       ),
     ),
-    themeName: label(
-      sanitizeThemeName(metadata?.themeName ?? reportStore.themeName),
-    ),
+    themeName: label(sanitizeThemeName(metadata?.themeName ?? reportStore.themeName)),
     pageType: label(metadata?.pageType ?? reportStore.currentPage),
   });
 }

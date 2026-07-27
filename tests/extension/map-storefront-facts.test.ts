@@ -4,7 +4,10 @@ import { FlexyPeProductId } from "../../src/detection/catalogs.js";
 import { mapStorefrontSnapshotToFacts } from "../../extension/adapters/map-storefront-facts.js";
 import { StorefrontPageType } from "../../extension/adapters/store-metadata.js";
 import type { StorefrontObservationSnapshot } from "../../extension/adapters/storefront-observation.js";
-import { EMPTY_DISABLED_SIGNALS, EMPTY_SHOPIFY_PAGE_SOURCES } from "../../extension/adapters/storefront-observation.js";
+import {
+  EMPTY_DISABLED_SIGNALS,
+  EMPTY_SHOPIFY_PAGE_SOURCES,
+} from "../../extension/adapters/storefront-observation.js";
 import { EvidenceSignalClass } from "../../src/evidence/signal-class.js";
 
 const DEFAULT_STORE_METADATA = Object.freeze({
@@ -44,7 +47,9 @@ describe("mapStorefrontSnapshotToFacts", () => {
       }),
     );
 
-    const scriptFact = facts.find((fact) => fact.signalClass === EvidenceSignalClass.ScriptUrls);
+    const scriptFact = facts.find(
+      (fact) => fact.signalClass === EvidenceSignalClass.ScriptUrls,
+    );
     const assetFact = facts.find(
       (fact) => fact.signalClass === EvidenceSignalClass.LoadedJavaScriptAssets,
     );
@@ -77,7 +82,9 @@ describe("mapStorefrontSnapshotToFacts", () => {
       }),
     );
 
-    const domFact = facts.find((fact) => fact.signalClass === EvidenceSignalClass.DomElements);
+    const domFact = facts.find(
+      (fact) => fact.signalClass === EvidenceSignalClass.DomElements,
+    );
     const htmlFact = facts.find(
       (fact) => fact.signalClass === EvidenceSignalClass.HtmlStructure,
     );
@@ -126,7 +133,9 @@ describe("mapStorefrontSnapshotToFacts", () => {
       }),
     );
 
-    const scriptFact = facts.find((fact) => fact.signalClass === EvidenceSignalClass.ScriptUrls);
+    const scriptFact = facts.find(
+      (fact) => fact.signalClass === EvidenceSignalClass.ScriptUrls,
+    );
     const assetFact = facts.find(
       (fact) => fact.signalClass === EvidenceSignalClass.LoadedJavaScriptAssets,
     );
@@ -158,7 +167,9 @@ describe("mapStorefrontSnapshotToFacts", () => {
       }),
     );
 
-    const domFact = facts.find((fact) => fact.signalClass === EvidenceSignalClass.DomElements);
+    const domFact = facts.find(
+      (fact) => fact.signalClass === EvidenceSignalClass.DomElements,
+    );
 
     expect(domFact?.observationSummary).toContain(
       `flexype.product.${FlexyPeProductId.Checkout}`,
@@ -184,7 +195,11 @@ describe("mapStorefrontSnapshotToFacts", () => {
   it("adds Checkout markers for FlexyPe checkout global objects", () => {
     const facts = mapStorefrontSnapshotToFacts(
       createSnapshot({
-        globalObjects: Object.freeze(["openFlexyCheckout", "flexypeMid", "flexypeRegion"]),
+        globalObjects: Object.freeze([
+          "openFlexyCheckout",
+          "flexypeMid",
+          "flexypeRegion",
+        ]),
       }),
     );
 
@@ -212,7 +227,9 @@ describe("mapStorefrontSnapshotToFacts", () => {
       }),
     );
 
-    const scriptFact = facts.find((fact) => fact.signalClass === EvidenceSignalClass.ScriptUrls);
+    const scriptFact = facts.find(
+      (fact) => fact.signalClass === EvidenceSignalClass.ScriptUrls,
+    );
     const assetFact = facts.find(
       (fact) => fact.signalClass === EvidenceSignalClass.LoadedJavaScriptAssets,
     );
@@ -244,7 +261,9 @@ describe("mapStorefrontSnapshotToFacts", () => {
       }),
     );
 
-    const domFact = facts.find((fact) => fact.signalClass === EvidenceSignalClass.DomElements);
+    const domFact = facts.find(
+      (fact) => fact.signalClass === EvidenceSignalClass.DomElements,
+    );
 
     expect(domFact?.observationSummary).toContain(
       `flexype.product.${FlexyPeProductId.FlexyPass}`,
@@ -274,7 +293,9 @@ describe("mapStorefrontSnapshotToFacts", () => {
   it("does not add FlexyPass markers to generic FlexyPe SDK script URLs", () => {
     const facts = mapStorefrontSnapshotToFacts(
       createSnapshot({
-        scriptUrls: Object.freeze(["https://static.flexype.in/scripts/flexype-v2.min.js"]),
+        scriptUrls: Object.freeze([
+          "https://static.flexype.in/scripts/flexype-v2.min.js",
+        ]),
       }),
     );
 
@@ -304,10 +325,22 @@ describe("mapStorefrontSnapshotToFacts", () => {
       }),
     );
 
-    expect(facts.some((fact) => fact.observationSummary === "store.url: https://demo.myshopify.com/products/test")).toBe(true);
-    expect(facts.some((fact) => fact.observationSummary === "store.shopName: Demo Shop")).toBe(true);
-    expect(facts.some((fact) => fact.observationSummary === "store.baseCurrency: INR")).toBe(true);
-    expect(facts.some((fact) => fact.observationSummary === "store.currentPage: Product")).toBe(true);
+    expect(
+      facts.some(
+        (fact) =>
+          fact.observationSummary ===
+          "store.url: https://demo.myshopify.com/products/test",
+      ),
+    ).toBe(true);
+    expect(
+      facts.some((fact) => fact.observationSummary === "store.shopName: Demo Shop"),
+    ).toBe(true);
+    expect(
+      facts.some((fact) => fact.observationSummary === "store.baseCurrency: INR"),
+    ).toBe(true);
+    expect(
+      facts.some((fact) => fact.observationSummary === "store.currentPage: Product"),
+    ).toBe(true);
   });
 
   it("adds FlexyPass markers for FlexyPass global objects", () => {
@@ -408,7 +441,9 @@ describe("mapStorefrontSnapshotToFacts", () => {
       disabledFacts.some((fact) => fact.signalClass === EvidenceSignalClass.ScriptUrls),
     ).toBe(true);
     expect(
-      disabledFacts.every((fact) => !fact.observationSummary.includes("flexype.product.")),
+      disabledFacts.every(
+        (fact) => !fact.observationSummary.includes("flexype.product."),
+      ),
     ).toBe(true);
   });
 
@@ -431,7 +466,9 @@ describe("mapStorefrontSnapshotToFacts", () => {
     );
 
     const disabledFacts = facts.filter((fact) =>
-      fact.observationSummary.includes(`flexype.disabled.${FlexyPeProductId.FlexyPass}`),
+      fact.observationSummary.includes(
+        `flexype.disabled.${FlexyPeProductId.FlexyPass}`,
+      ),
     );
 
     expect(disabledFacts.length).toBeGreaterThanOrEqual(2);
@@ -443,7 +480,9 @@ describe("mapStorefrontSnapshotToFacts", () => {
       ),
     ).toBe(true);
     expect(
-      disabledFacts.some((fact) => fact.signalClass === EvidenceSignalClass.HtmlStructure),
+      disabledFacts.some(
+        (fact) => fact.signalClass === EvidenceSignalClass.HtmlStructure,
+      ),
     ).toBe(true);
   });
 
@@ -467,7 +506,9 @@ describe("mapStorefrontSnapshotToFacts", () => {
     );
 
     const disabledFacts = facts.filter((fact) =>
-      fact.observationSummary.includes(`flexype.disabled.${FlexyPeProductId.FlexyCart}`),
+      fact.observationSummary.includes(
+        `flexype.disabled.${FlexyPeProductId.FlexyCart}`,
+      ),
     );
 
     expect(disabledFacts.length).toBeGreaterThanOrEqual(2);

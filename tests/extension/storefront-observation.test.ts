@@ -25,10 +25,12 @@ describe("storefront observation snapshot", () => {
         documentReadyState: "interactive",
       }),
     ).toBe(true);
-    expect(isStorefrontReadyResponse({ kind: "StorefrontObservationReady", ready: false })).toBe(
-      true,
+    expect(
+      isStorefrontReadyResponse({ kind: "StorefrontObservationReady", ready: false }),
+    ).toBe(true);
+    expect(isStorefrontReadyResponse({ kind: "StorefrontObservationSnapshot" })).toBe(
+      false,
     );
-    expect(isStorefrontReadyResponse({ kind: "StorefrontObservationSnapshot" })).toBe(false);
   });
 
   it("accepts a full public storefront observation payload", () => {

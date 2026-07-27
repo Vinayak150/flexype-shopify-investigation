@@ -10,8 +10,7 @@ export const ExtensionCommand = {
   GET_PRESENTATION_VIEW: "GET_PRESENTATION_VIEW",
 } as const;
 
-export type ExtensionCommand =
-  (typeof ExtensionCommand)[keyof typeof ExtensionCommand];
+export type ExtensionCommand = (typeof ExtensionCommand)[keyof typeof ExtensionCommand];
 
 export interface ExtensionMessage {
   readonly command: ExtensionCommand;

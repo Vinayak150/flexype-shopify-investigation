@@ -20,7 +20,9 @@ function readStringProperty(source: unknown, key: string): string | undefined {
   return undefined;
 }
 
-function serializeShopifyCurrency(currency: unknown): { readonly active: string } | undefined {
+function serializeShopifyCurrency(
+  currency: unknown,
+): { readonly active: string } | undefined {
   if (currency === null || currency === undefined || typeof currency !== "object") {
     return undefined;
   }
@@ -69,7 +71,9 @@ function serializeShopifyGlobal(shopify: unknown): Record<string, unknown> | und
   return Object.keys(payload).length > 0 ? payload : undefined;
 }
 
-function serializeShopifyAnalytics(shopifyAnalytics: unknown): Record<string, unknown> | undefined {
+function serializeShopifyAnalytics(
+  shopifyAnalytics: unknown,
+): Record<string, unknown> | undefined {
   if (
     shopifyAnalytics === null ||
     shopifyAnalytics === undefined ||
@@ -95,7 +99,9 @@ function serializeShopifyAnalytics(shopifyAnalytics: unknown): Record<string, un
   });
 }
 
-function serializeMetaGlobal(meta: unknown): Record<string, string | number | boolean> | undefined {
+function serializeMetaGlobal(
+  meta: unknown,
+): Record<string, string | number | boolean> | undefined {
   if (meta === null || meta === undefined || typeof meta !== "object") {
     return undefined;
   }
@@ -185,7 +191,9 @@ export function extractShopifyPageSourcesMainWorld(): StorefrontShopifyPageSourc
 
     const currency = serializeCurrency(record.currency);
     const payload = {
-      ...(readString(record, "shop") !== undefined ? { shop: readString(record, "shop")! } : {}),
+      ...(readString(record, "shop") !== undefined
+        ? { shop: readString(record, "shop")! }
+        : {}),
       ...(readString(record, "locale") !== undefined
         ? { locale: readString(record, "locale")! }
         : {}),
@@ -199,7 +207,9 @@ export function extractShopifyPageSourcesMainWorld(): StorefrontShopifyPageSourc
     return Object.keys(payload).length > 0 ? payload : undefined;
   };
 
-  const serializeAnalytics = (shopifyAnalytics: unknown): Record<string, unknown> | undefined => {
+  const serializeAnalytics = (
+    shopifyAnalytics: unknown,
+  ): Record<string, unknown> | undefined => {
     if (
       shopifyAnalytics === null ||
       shopifyAnalytics === undefined ||
@@ -225,7 +235,9 @@ export function extractShopifyPageSourcesMainWorld(): StorefrontShopifyPageSourc
     };
   };
 
-  const serializeMeta = (meta: unknown): Record<string, string | number | boolean> | undefined => {
+  const serializeMeta = (
+    meta: unknown,
+  ): Record<string, string | number | boolean> | undefined => {
     if (meta === null || meta === undefined || typeof meta !== "object") {
       return undefined;
     }

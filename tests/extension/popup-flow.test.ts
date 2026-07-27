@@ -141,7 +141,9 @@ describe("extension popup flow", () => {
 
   it("maps product status labels to presentation classes only", () => {
     expect(productStatusClass("Detected")).toBe("product-item__status--detected");
-    expect(productStatusClass("Not Detected")).toBe("product-item__status--not-detected");
+    expect(productStatusClass("Not Detected")).toBe(
+      "product-item__status--not-detected",
+    );
     expect(productStatusClass("Disabled")).toBe("product-item__status--disabled");
     expect(productStatusClass("Unknown")).toBe("product-item__status--unknown");
   });

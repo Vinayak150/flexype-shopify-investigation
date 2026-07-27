@@ -11,7 +11,9 @@ export type HeaderStatus = "Ready" | "Running" | "Completed" | "Partial";
 
 export type PopupDisplayState = "empty" | "running" | "completed" | "partial" | "error";
 
-export function deriveHeaderStatus(status: ExtensionRuntimeStatusPayload): HeaderStatus {
+export function deriveHeaderStatus(
+  status: ExtensionRuntimeStatusPayload,
+): HeaderStatus {
   if (status.investigationState === "InProgress") {
     return "Running";
   }
@@ -81,20 +83,26 @@ export function resolvePopupDisplayState(input: {
   return "completed";
 }
 
-export function isExtensionResponse<T>(value: unknown): value is {
-  readonly ok: true;
-  readonly payload: T;
-} | {
-  readonly ok: false;
-  readonly error: string;
-} {
-  return value !== null && typeof value === "object" && "ok" in (value as { ok: boolean });
+export function isExtensionResponse<T>(value: unknown): value is
+  | {
+      readonly ok: true;
+      readonly payload: T;
+    }
+  | {
+      readonly ok: false;
+      readonly error: string;
+    } {
+  return (
+    value !== null && typeof value === "object" && "ok" in (value as { ok: boolean })
+  );
 }
 
 export function parseExtensionResponse<T>(
   response: unknown,
   runtimeError?: string,
-): { readonly ok: true; readonly payload: T } | { readonly ok: false; readonly error: string } {
+):
+  | { readonly ok: true; readonly payload: T }
+  | { readonly ok: false; readonly error: string } {
   if (runtimeError !== undefined && runtimeError.length > 0) {
     return { ok: false, error: runtimeError };
   }

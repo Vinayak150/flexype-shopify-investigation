@@ -3,10 +3,7 @@
  * Does not inspect DOM, detect products, or assemble Reports.
  */
 import { createExtensionRuntime } from "./extension-runtime.js";
-import {
-  createMessageRouter,
-  ExtensionCommand,
-} from "./message-router.js";
+import { createMessageRouter, ExtensionCommand } from "./message-router.js";
 
 const extensionRuntime = createExtensionRuntime();
 const router = createMessageRouter(extensionRuntime);

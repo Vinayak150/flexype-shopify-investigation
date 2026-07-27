@@ -48,7 +48,10 @@ function readShopifyStringProperty(source: object, key: string): string | undefi
   return undefined;
 }
 
-function readShopifyObjectProperty(source: object, key: string): Record<string, unknown> | undefined {
+function readShopifyObjectProperty(
+  source: object,
+  key: string,
+): Record<string, unknown> | undefined {
   let value: unknown;
   try {
     value = Reflect.get(source, key);
@@ -164,7 +167,9 @@ export function parseShopifyGlobal(value: unknown): ShopifyGlobalSnapshot | unde
   return snapshot;
 }
 
-export function normalizeShopifyDomainCandidate(value: string | undefined): string | undefined {
+export function normalizeShopifyDomainCandidate(
+  value: string | undefined,
+): string | undefined {
   if (value === undefined || value.trim().length === 0) {
     return undefined;
   }
@@ -214,7 +219,10 @@ export function resolveBaseCurrency(input: {
     return input.shopifyCurrency.trim();
   }
 
-  if (input.analyticsCurrency !== undefined && input.analyticsCurrency.trim().length > 0) {
+  if (
+    input.analyticsCurrency !== undefined &&
+    input.analyticsCurrency.trim().length > 0
+  ) {
     return input.analyticsCurrency.trim();
   }
 
@@ -250,7 +258,10 @@ export function resolveThemeName(input: {
   readonly shopifyThemeName?: string;
   readonly shopifyThemeSchemaName?: string;
 }): string | undefined {
-  if (input.shopifyThemeName !== undefined && input.shopifyThemeName.trim().length > 0) {
+  if (
+    input.shopifyThemeName !== undefined &&
+    input.shopifyThemeName.trim().length > 0
+  ) {
     const trimmed = input.shopifyThemeName.trim();
     if (!isThemeAssetReference(trimmed)) {
       return trimmed;
@@ -289,8 +300,7 @@ export function buildStorefrontMetadataSnapshot(input: {
     input.shopifyGlobal ??
     (input.shopify !== undefined ? parseShopifyGlobal(input.shopify) : undefined);
   const shopifyGlobalProvided =
-    input.shopify !== undefined ||
-    input.shopifyGlobal !== undefined;
+    input.shopify !== undefined || input.shopifyGlobal !== undefined;
 
   const shopifyDomain = resolveShopifyDomain({
     ...(shopify?.shop !== undefined ? { shopifyShop: shopify.shop } : {}),
@@ -298,7 +308,9 @@ export function buildStorefrontMetadataSnapshot(input: {
     shopifyGlobalProvided,
   });
   const themeName = resolveThemeName({
-    ...(shopify?.themeName !== undefined ? { shopifyThemeName: shopify.themeName } : {}),
+    ...(shopify?.themeName !== undefined
+      ? { shopifyThemeName: shopify.themeName }
+      : {}),
     ...(shopify?.themeSchemaName !== undefined
       ? { shopifyThemeSchemaName: shopify.themeSchemaName }
       : {}),
@@ -355,9 +367,7 @@ export function buildStorefrontMetadataFromShopifyGlobals(input: {
     ...(input.pageTitle !== undefined ? { pageTitle: input.pageTitle } : {}),
     ...(input.shopify !== undefined ? { shopify: input.shopify } : {}),
     ...(shopifyGlobal !== undefined ? { shopifyGlobal } : {}),
-    ...(shopifyAnalyticsCurrency !== undefined
-      ? { shopifyAnalyticsCurrency }
-      : {}),
+    ...(shopifyAnalyticsCurrency !== undefined ? { shopifyAnalyticsCurrency } : {}),
     ...(input.documentLang !== undefined ? { documentLang: input.documentLang } : {}),
   });
 }

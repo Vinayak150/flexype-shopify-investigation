@@ -79,7 +79,9 @@ describe("createChromeFactSource", () => {
       facts.some((fact) => fact.signalClass === EvidenceSignalClass.ScriptUrls),
     ).toBe(true);
     expect(
-      facts.some((fact) => fact.signalClass === EvidenceSignalClass.GlobalBrowserObjects),
+      facts.some(
+        (fact) => fact.signalClass === EvidenceSignalClass.GlobalBrowserObjects,
+      ),
     ).toBe(true);
   });
 

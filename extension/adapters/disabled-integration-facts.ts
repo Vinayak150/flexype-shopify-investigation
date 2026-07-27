@@ -80,7 +80,9 @@ function hasFlexyCheckoutBranding(text: string): boolean {
   return false;
 }
 
-export function inferDisabledProductFromText(text: string): FlexyPeProductIdType | undefined {
+export function inferDisabledProductFromText(
+  text: string,
+): FlexyPeProductIdType | undefined {
   if (/data-flexy-type(?:=|:|\s|"|')(?:"|')?(?:cart|flexycart)/i.test(text)) {
     return FlexyPeProductId.FlexyCart;
   }
@@ -93,7 +95,11 @@ export function inferDisabledProductFromText(text: string): FlexyPeProductIdType
   if (hasFlexyCartBranding(text)) {
     return FlexyPeProductId.FlexyCart;
   }
-  if (isFlexyPeSdkAssetUrl(text) || hasFlexyCheckoutBranding(text) || FLEXYPE_HINT.test(text)) {
+  if (
+    isFlexyPeSdkAssetUrl(text) ||
+    hasFlexyCheckoutBranding(text) ||
+    FLEXYPE_HINT.test(text)
+  ) {
     return FlexyPeProductId.Checkout;
   }
   return undefined;
@@ -109,9 +115,7 @@ function disabledElementText(indicator: StorefrontDisabledElementIndicator): str
   return parts.join(" ");
 }
 
-function disabledMarkersForProduct(
-  productId: FlexyPeProductIdType,
-): readonly string[] {
+function disabledMarkersForProduct(productId: FlexyPeProductIdType): readonly string[] {
   switch (productId) {
     case FlexyPeProductId.Checkout:
       return DISABLED_MARKERS.Checkout;
@@ -133,7 +137,9 @@ function checkoutDisabledSummaries(text: string): readonly string[] {
   if (/^\s*\/\//.test(text.trim())) {
     return Object.freeze(["FlexyPe Checkout reference found in commented script"]);
   }
-  return Object.freeze(["FlexyPe Checkout integration reference found in inactive markup"]);
+  return Object.freeze([
+    "FlexyPe Checkout integration reference found in inactive markup",
+  ]);
 }
 
 function disabledSummaryForProduct(
@@ -143,7 +149,10 @@ function disabledSummaryForProduct(
 ): string {
   switch (productId) {
     case FlexyPeProductId.Checkout:
-      return checkoutDisabledSummaries(text)[0] ?? "FlexyPe Checkout integration appears inactive";
+      return (
+        checkoutDisabledSummaries(text)[0] ??
+        "FlexyPe Checkout integration appears inactive"
+      );
     case FlexyPeProductId.FlexyPass:
       return context === "hidden"
         ? "FlexyPass container exists but is hidden"

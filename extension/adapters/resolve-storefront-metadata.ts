@@ -15,14 +15,18 @@ export function resolveStoreMetadataFromObservation(
     ...(snapshot.metadata.canonicalUrl !== undefined
       ? { canonicalUrl: snapshot.metadata.canonicalUrl }
       : {}),
-    ...(snapshot.metadata.title !== undefined ? { pageTitle: snapshot.metadata.title } : {}),
+    ...(snapshot.metadata.title !== undefined
+      ? { pageTitle: snapshot.metadata.title }
+      : {}),
     ...(snapshot.shopifySources.shopify !== undefined
       ? { shopify: snapshot.shopifySources.shopify }
       : {}),
     ...(snapshot.shopifySources.shopifyAnalytics !== undefined
       ? { shopifyAnalytics: snapshot.shopifySources.shopifyAnalytics }
       : {}),
-    ...(snapshot.documentLang !== undefined ? { documentLang: snapshot.documentLang } : {}),
+    ...(snapshot.documentLang !== undefined
+      ? { documentLang: snapshot.documentLang }
+      : {}),
   });
 }
 

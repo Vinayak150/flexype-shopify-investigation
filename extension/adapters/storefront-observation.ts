@@ -33,10 +33,7 @@ export interface StorefrontDisabledElementIndicator {
   readonly classes?: readonly string[];
   readonly dataAttributes?: readonly string[];
   readonly concealment?:
-    | "display-none"
-    | "hidden-attribute"
-    | "aria-hidden"
-    | "disabled-attribute";
+    "display-none" | "hidden-attribute" | "aria-hidden" | "disabled-attribute";
 }
 
 export interface StorefrontDisabledSignals {
@@ -59,7 +56,9 @@ export interface StorefrontShopifyPageSources {
   readonly meta?: unknown;
 }
 
-export const EMPTY_SHOPIFY_PAGE_SOURCES: StorefrontShopifyPageSources = Object.freeze({});
+export const EMPTY_SHOPIFY_PAGE_SOURCES: StorefrontShopifyPageSources = Object.freeze(
+  {},
+);
 
 export interface StorefrontObservationSnapshot {
   readonly kind: "StorefrontObservationSnapshot";
@@ -92,7 +91,9 @@ export interface StorefrontReadyRequest {
   readonly kind: typeof STOREFRONT_READY_MESSAGE;
 }
 
-export function isStorefrontReadyResponse(value: unknown): value is StorefrontReadyResponse {
+export function isStorefrontReadyResponse(
+  value: unknown,
+): value is StorefrontReadyResponse {
   return (
     value !== null &&
     typeof value === "object" &&
