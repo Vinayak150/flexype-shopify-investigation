@@ -396,6 +396,7 @@ Detection decisions are derived from observed storefront signals and evidence re
 
 - Architecture and ADR documents are frozen.
 - P-007 Configuration remains optional.
+- FR-026 Product Configuration is an optional enhancement and is not required for core investigation success.
 - P-008 Traceability is non-blocking.
 - Unknown states remain explicit.
 - `dist/` is generated output only.
