@@ -14,3 +14,5 @@ export * from "./errors.js";
 export * from "./popup-shell.js";
 export * from "./trace-hooks.js";
 export * from "./composition.js";
+export * from "./runtime/extension-runtime.js";
+export * from "./runtime/message-router.js";
